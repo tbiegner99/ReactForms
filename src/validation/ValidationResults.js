@@ -1,13 +1,13 @@
-export class ValidationResults {
-  static Builder = class {
-    constructor() {
-      this.result = new ValidationResults()
-    }
-    withResult(result) {
+export default class ValidationResults {
+    static Builder = class {
+        constructor() {
+            this.result = new ValidationResults();
+        }
 
+        withResult() {}
+    };
+
+    constructor() {
+        throw new Error('please use ValidationResults.Builder');
     }
-  }
-  constructor() {
-    throw new Error("please use ValidationResults.Builder")
-  }
 }

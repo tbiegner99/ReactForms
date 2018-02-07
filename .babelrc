@@ -1,13 +1,8 @@
 {
-  "presets": [
-    ["es2015", {"modules": false}],
-    "es2016",
-    "env"
-  ],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+    "presets": [["es2015", { "modules": false }], "es2016", "react", "env"],
+    "plugins": ["transform-es2015-modules-commonjs", "transform-class-properties"],
+    "sourceMaps":"inline",
+    "env": {
+        "test": {}
     }
-  }
 }

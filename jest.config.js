@@ -3,6 +3,7 @@ module.exports = {
   testMatch: [
     '**/tests/**/*.spec.js',
   ],
+  sourceMap:"inline",
   collectCoverageFrom: [
     '**/src/**/*.js',
   ],
