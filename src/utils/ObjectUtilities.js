@@ -26,8 +26,8 @@ export default class ObjectUtilies {
         Assert.toBeObject(objectToMap, 'First argument must be an object');
         const mapFunc = ValueEnforcer.toBeFunction(mapFuncion, IdentityFunction);
         return Object.keys(objectToMap)
-            .map((key, index) => mapFunc(objectToMap[key],key,index,objectToMap))
-            .filter((obj)=>typeof obj !== "undefined")
+            .map((key, index) => mapFunc(objectToMap[key], key, index, objectToMap))
+            .filter((obj) => typeof obj !== 'undefined');
     }
 
     static map(objectToMap, keyMapFuncion, valueMapFunction) {

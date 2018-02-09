@@ -2,8 +2,8 @@ import ObjectUtilities from '../utils/ObjectUtilities';
 import ValueEnforcer from '../utils/ValueEnforcer';
 import Rule from './Rule';
 import Assert from '../utils/Assert';
-import {default as BuiltInRules} from "./BuiltInRules"
-// Built in rules
+import BuiltInRules from './BuiltInRules';
+import Validator from './validator/Validator';
 
 class PrivateFunctions {
     sortByPriority(rule1, rule2) {
@@ -16,7 +16,7 @@ const _registeredRules = Symbol('registeredRules');
 export class ValidationRuleManager {
     constructor() {
         privates = new PrivateFunctions(this);
-        this[_registeredRules] = Object.assign({},BuiltInRules);
+        this[_registeredRules] = Object.assign({}, BuiltInRules);
     }
 
     get rules() {
@@ -63,13 +63,16 @@ export class ValidationRuleManager {
             return {
                 rule,
                 message: rule.getDefaultMessage,
-                priority: rule.defaultPriority
+                priority: rule.defaultPriority,
+                name: rule.constructor.ruleName
             };
         }
+
         return Object.assign(
             {
                 message: rule.rule.getDefaultMessage,
-                priority: rule.rule.defaultPriority
+                priority: rule.rule.defaultPriority,
+                name: rule.rule.constructor.ruleName
             },
             rule
         );
@@ -80,12 +83,15 @@ export class ValidationRuleManager {
             throw new Error('rule config object in data-validation-config must be an array');
         }
         config.forEach(this.validateSingleRuleConfiguration);
-        config = config.map(this.normalizeRule);
-        config.sort(privates.sortByPriority);
-        return config;
+        const ruleConfig = config.map(this.normalizeRule);
+        ruleConfig.sort(privates.sortByPriority);
+        return ruleConfig;
     }
 
     createRuleConfigurationFromProps(props) {
+        if (!props || typeof props !== 'object') {
+            throw new Error('Props must be non null object');
+        }
         const config = props['data-validation-config'];
 
         if (config) {
@@ -100,33 +106,49 @@ export class ValidationRuleManager {
         const priorityProps = ObjectUtilities.filter(props, (key) =>
             key.startsWith('data-priority-')
         );
-        const rulesWithConfig = ObjectUtilities.filter(ruleProps,(key, value) => typeof value === 'object');
+        const rulesWithConfig = ObjectUtilities.filter(
+            ruleProps,
+            (key, value) => typeof value === 'object'
+        );
 
         // special alias for html5 required attribute
         if (props.required) {
             ruleProps['data-rule-required'] = true;
         }
 
-        const ruleObjects = ObjectUtilities.mapToArray(ruleProps, (value,key) => {
+        const ruleObjects = ObjectUtilities.mapToArray(ruleProps, (value, key) => {
             const ruleConfig = rulesWithConfig[key] || {};
             const ruleName = key.substr('data-rule-'.length);
-            const RuleType = this.rules[ruleName];
+            let rule;
+            if (value instanceof Rule) {
+                rule = value;
+            } else {
+                const RuleType = this.rules[ruleName];
 
-            if (!RuleType) throw new Error(`Rule not found with name ${ruleName}`);
-            const ruleArgs = Array.isArray(value) ? value : [value];
-            const rule = new RuleType(...ruleArgs);
-            const defaultMessage = ValueEnforcer.toBeOneOfType(msgProps[`data-msg-${ruleName}`],["string","function"], rule.getDefaultMessage);
-            const defaultPriority =
-                ValueEnforcer.toBeType(priorityProps[`data-priority-${ruleName}`],"number",rule.defaultPriority);
+                if (!RuleType) throw new Error(`Rule not found with name ${ruleName}`);
+                const ruleArgs = Array.isArray(value) ? value : [value];
+                rule = new RuleType(...ruleArgs);
+            }
+            const defaultMessage = ValueEnforcer.toBeOneOfType(
+                msgProps[`data-msg-${ruleName}`],
+                ['string', 'function'],
+                rule.getDefaultMessage
+            );
+            const defaultPriority = ValueEnforcer.toBeType(
+                priorityProps[`data-priority-${ruleName}`],
+                'number',
+                rule.defaultPriority
+            );
 
             return {
-                rule: rule,
+                rule,
                 message: ValueEnforcer.toBeOneOfType(
                     ['string', 'function'],
                     ruleConfig.message,
                     defaultMessage
                 ),
-                priority: ValueEnforcer.toBeNumber(ruleConfig.priority, defaultPriority)
+                priority: ValueEnforcer.toBeNumber(ruleConfig.priority, defaultPriority),
+                name: ruleName
             };
         });
         ruleObjects.sort(privates.sortByPriority);
@@ -134,12 +156,13 @@ export class ValidationRuleManager {
         return ruleObjects;
     }
 
-    validateUsingConfiguration(config, value) {}
+    validate(value, props) {
+        let config = props;
+        if (!Array.isArray(props)) {
+            config = this.createRuleConfigurationFromProps(props);
+        }
 
-    validate(props, value) {
-        const config = this.createRuleConfigurationFromProps(props);
-
-        return this.validateUsingConfiguration(config, value);
+        return Validator.validate(value, config);
     }
 }
 export default new ValidationRuleManager();

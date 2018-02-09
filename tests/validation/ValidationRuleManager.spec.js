@@ -1,6 +1,7 @@
 import RuleManager from '../../src/validation/ValidationRuleManager';
 import testAddRule from './ValidationRuleManager/testRegisterRule';
 import testCreateRuleConfigurationFromProps from './ValidationRuleManager/testCreateRuleConfigurationFromProps';
+import testValidate from './ValidationRuleManager/testValidate';
 
 describe('ValidationRuleManger', () => {
     it('exports a singleton Object', () => {
@@ -20,4 +21,5 @@ describe('ValidationRuleManger', () => {
     });
     testAddRule();
     testCreateRuleConfigurationFromProps();
+    testValidate();
 });

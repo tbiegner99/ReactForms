@@ -5,9 +5,10 @@ export default class RequiredRule extends Rule {
     static get ruleName() {
         return 'required';
     }
-    //this should be first in rule list be default
+
+    // this should be first in rule list be default
     get defaultPriority() {
-      return 0;
+        return 0;
     }
 
     validate(value) {

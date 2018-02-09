@@ -8,14 +8,18 @@
     },
     "scripts": {
         "test": "jest --config jest.config.js",
-        "test-watch": "jest tests/**/*.spec.js",
-        "test-debug": "node --inspect ./node_modules/jest/bin/jest.js --watch tests/**/*.spec.js"
+        "test-watch": "jest",
+        "test-debug": "node --inspect ./node_modules/jest/bin/jest.js --watch "
     },
     "repository": {
         "type": "git",
         "url": "g"
     },
-    "keywords": ["forms", "react", "validation"],
+    "keywords": [
+        "forms",
+        "react",
+        "validation"
+    ],
     "author": "TJ Biegner",
     "license": "ISC",
     "dependencies": {
@@ -45,6 +49,7 @@
         "jsdoc": "^3.5.5",
         "mocha": "^5.0.0",
         "prettier": "^1.10.2",
+        "sinon": "^4.2.2",
         "storybook": "^1.0.0",
         "webpack": "^3.10.0"
     }

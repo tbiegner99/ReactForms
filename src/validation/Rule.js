@@ -12,9 +12,14 @@ export default class Rule {
         return 1;
     }
 
-    // To avoid errors this must be overriden
-    get name() {
+    // To avoid errors this must be overriden and must be static
+    static get name() {
         return null;
+    }
+
+    // returns static definition
+    get name() {
+        return this.constructor.name;
     }
 
     getDefaultMessage(value) {

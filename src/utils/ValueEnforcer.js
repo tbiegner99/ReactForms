@@ -11,7 +11,7 @@ export default class ValueEnforcer {
         }
     }
 
-    static toBeOneOfType(obj,typeArr, defaultValue) {
+    static toBeOneOfType(obj, typeArr, defaultValue) {
         try {
             Assert.toBeOneOfType(obj, typeArr);
 

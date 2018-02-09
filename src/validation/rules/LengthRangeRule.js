@@ -4,14 +4,14 @@ import LengthMinRule from './LengthMinRule';
 import LengthMaxRule from './LengthMaxRule';
 
 export default class LengthRangeRule extends Rule {
-    constructor(minValue = 0, maxValue = Number.MAX_VALUE) {
+    constructor(minValue, maxValue) {
         super();
         const minLengthArg = Assert.toBeInteger(
             minValue || 0,
             `Expected integer arg for min length but found ${minValue}`
         );
         const maxLengthArg = Assert.toBeInteger(
-            maxValue || 0,
+            maxValue || Number.MAX_VALUE,
             `Expected integer arg for max length but found ${maxValue}`
         );
 
