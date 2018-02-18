@@ -22,8 +22,8 @@ export default class Rule {
         return this.constructor.name;
     }
 
-    getDefaultMessage(value) {
-        return `Rule violated for value ${value} - ${this.name}`;
+    getDefaultMessage(value, ruleInstance = this) {
+        return `Rule violated for value ${value} - ${ruleInstance.name}`;
     }
 
     // eslint-disable-next-line no-unused-vars

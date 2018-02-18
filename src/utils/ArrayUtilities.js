@@ -4,11 +4,12 @@ import ValueEnforcer from './ValueEnforcer';
 
 const keyAsIndex = (item, index) => index;
 export default class ArrayUtilities {
-    static mapToObject(arr, keyMapFunction, valueMapFunction) {
+    static mapToObject(arr, keyMapFunction, valueMapFunction, initValue) {
         if (!arr) return null;
         Assert.toBeArray(arr, 'Expected array as first argument');
         const keyFunc = ValueEnforcer.toBeFunction(keyMapFunction, keyAsIndex);
         const valueFunc = ValueEnforcer.toBeFunction(valueMapFunction, IdentityFunction);
+        const initialValue = ValueEnforcer.toBeObject(initValue, {});
 
         const mapperFunction = (item, index) => {
             const key = keyFunc(item, index, arr);
@@ -16,7 +17,9 @@ export default class ArrayUtilities {
             if (typeof key === 'undefined' || key === null) return {};
             return { [key]: value };
         };
-        return arr.map(mapperFunction).reduce((acc, item) => Object.assign(acc, item), {});
+        return arr
+            .map(mapperFunction)
+            .reduce((acc, item) => Object.assign(acc, item), initialValue);
     }
 
     static partitionBy(arr, keyMapFunction, allowNullKeys) {

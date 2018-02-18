@@ -2,7 +2,9 @@ import {
     IdentityFunction,
     NoOperation,
     TrueFunction,
-    FalseFunction
+    FalseFunction,
+    RejectFunction,
+    ResolveFunction
 } from '../../src/utils/CommonFunctions';
 
 describe('common functions', () => {
@@ -18,5 +20,12 @@ describe('common functions', () => {
     });
     it('returns false for false function ', () => {
         expect(FalseFunction()).toBe(false);
+    });
+    it('returns rejected promise for reject function ', () => {
+        expect(RejectFunction()).toEqual(Promise.reject());
+    });
+
+    it('returns resolved promise for resolve function ', () => {
+        expect(ResolveFunction()).toEqual(Promise.resolve());
     });
 });

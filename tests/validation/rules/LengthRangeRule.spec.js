@@ -59,32 +59,24 @@ describe.only('LengthRangeRule', () => {
             expect(typeof rule.validate).toEqual('function');
         });
 
-        it('returns a resolved promise on successfull validation (non empty value)', async () =>
-            rule.validate('Hell').then(() => rule.validate(123)));
+        it('returns a resolved promise on successfull validation (non empty value)', async () => {
+            await expect(rule.validate('Hell')).resolves;
+            await expect(rule.validate(123)).resolves;
+        });
 
         it('returns a rejected promise if length is less than min length', async () =>
-            rule.validate('12').catch((e) => {
-                expect(e).toBeInstanceOf(InvalidValueError);
-            }));
+            expect(rule.validate('12')).rejects.toBeInstanceOf(InvalidValueError));
 
         it('returns a rejected promise if length is greater than max length', async () =>
-            rule.validate('123456').catch((e) => {
-                expect(e).toBeInstanceOf(InvalidValueError);
-            }));
+            expect(rule.validate('123456')).rejects.toBeInstanceOf(InvalidValueError));
 
         it('returns a rejected promise on empty string', async () =>
-            rule.validate('').catch((e) => {
-                expect(e).toBeInstanceOf(InvalidValueError);
-            }));
+            expect(rule.validate('')).rejects.toBeInstanceOf(InvalidValueError));
 
         it('returns a rejected promise on null', async () =>
-            rule.validate(null).catch((e) => {
-                expect(e).toBeInstanceOf(InvalidValueError);
-            }));
+            expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError));
 
         it('returns a rejected promise on undefined', async () =>
-            rule.validate(null).catch((e) => {
-                expect(e).toBeInstanceOf(InvalidValueError);
-            }));
+            expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError));
     });
 });

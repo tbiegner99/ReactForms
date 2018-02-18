@@ -22,10 +22,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('a', ruleConfig)).resolves.toEqual({
-                invalidElements: 0,
-                isAllValid: true,
+                numberOfInvalidElements: 0,
+                valid: true,
                 message: null,
-                rulesViolated: 0
+                numberOfRulesViolated: 0
             });
         });
 
@@ -38,10 +38,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'This is required',
-                rulesViolated: 1
+                numberOfRulesViolated: 1
             });
         });
 
@@ -54,10 +54,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('ABC', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'ABC is not a number',
-                rulesViolated: 1
+                numberOfRulesViolated: 1
             });
         });
 
@@ -75,10 +75,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'This is required',
-                rulesViolated: 2
+                numberOfRulesViolated: 2
             });
         });
 
@@ -96,10 +96,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('a', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'This is a reject rule',
-                rulesViolated: 1
+                numberOfRulesViolated: 1
             });
         });
 
@@ -117,10 +117,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'This is a reject rule',
-                rulesViolated: 2
+                numberOfRulesViolated: 2
             });
         });
     });
@@ -148,10 +148,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             return expect(Validator.validate('a', ruleConfig)).resolves.toEqual({
-                invalidElements: 0,
-                isAllValid: true,
+                numberOfInvalidElements: 0,
+                valid: true,
                 message: null,
-                rulesViolated: 0
+                numberOfRulesViolated: 0
             });
         });
         it('does not evaluate rules of lower priority if rules of higher priority fail (fail fast)', async () => {
@@ -168,10 +168,10 @@ describe('vlidates a value given a rule configuration', () => {
                 }
             ];
             await expect(Validator.validate('', ruleConfig)).rejects.toEqual({
-                invalidElements: 1,
-                isAllValid: false,
+                numberOfInvalidElements: 1,
+                valid: false,
                 message: 'This is required',
-                rulesViolated: 1
+                numberOfRulesViolated: 1
             });
             expect(slowRule.validate).not.toBeCalled();
         });

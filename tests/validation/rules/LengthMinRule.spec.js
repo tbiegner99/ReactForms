@@ -48,28 +48,28 @@ describe.only('LengthMinRule', () => {
             expect(typeof rule.validate).toEqual('function');
         });
 
-        it('returns a resolved promise on successfull validation (non empty value)', () => {
-            expect(rule.validate('Hello!')).resolves.toBeUndefined();
-            expect(rule.validate(123456)).resolves.toBeUndefined();
+        it('returns a resolved promise on successfull validation (non empty value)', async () => {
+            await expect(rule.validate('Hello!')).resolves.toBeUndefined();
+            await expect(rule.validate(123456)).resolves.toBeUndefined();
         });
 
-        it('returns a rejected promise if length is less than min length', () => {
+        it('returns a rejected promise if length is less than min length', async () => {
             const testStrings = ['', '1', '12', '123', '1234', '12345'];
-            testStrings.forEach((str) => {
-                expect(rule.validate(str)).rejects.toBeInstanceOf(InvalidValueError);
+            await testStrings.forEach(async (str) => {
+                await expect(rule.validate(str)).rejects.toBeInstanceOf(InvalidValueError);
             });
         });
 
-        it('returns a rejected promise on empty string', () => {
-            expect(rule.validate('')).rejects.toBeInstanceOf(InvalidValueError);
+        it('returns a rejected promise on empty string', async () => {
+            await expect(rule.validate('')).rejects.toBeInstanceOf(InvalidValueError);
         });
 
-        it('returns a rejected promise on null', () => {
-            expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
+        it('returns a rejected promise on null', async () => {
+            await expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
         });
 
-        it('returns a rejected promise on undefined', () => {
-            expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
+        it('returns a rejected promise on undefined', async () => {
+            await expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
         });
     });
 });

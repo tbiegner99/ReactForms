@@ -14,24 +14,28 @@ describe.only('RequiredRule', () => {
         expect(RequiredRule.ruleName).toEqual('required');
     });
 
+    it('has a default priority of 0', () => {
+        expect(rule.defaultPriority).toEqual(0);
+    });
+
     it('has an implementation of validate', () => {
         expect(typeof rule.validate).toEqual('function');
     });
 
-    it('returns a resolved promise on successfull validation (non empty value)', () => {
-        expect(rule.validate('Hello')).resolves.toBeUndefined();
-        expect(rule.validate(6)).resolves.toBeUndefined();
+    it('returns a resolved promise on successfull validation (non empty value)', async () => {
+        await expect(rule.validate('Hello')).resolves.toBeUndefined();
+        await expect(rule.validate(6)).resolves.toBeUndefined();
     });
 
-    it('returns a rejected promise on empty string', () => {
-        expect(rule.validate('')).rejects.toBeInstanceOf(InvalidValueError);
+    it('returns a rejected promise on empty string', async () => {
+        await expect(rule.validate('')).rejects.toBeInstanceOf(InvalidValueError);
     });
 
-    it('returns a rejected promise on null', () => {
-        expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
+    it('returns a rejected promise on null', async () => {
+        await expect(rule.validate(null)).rejects.toBeInstanceOf(InvalidValueError);
     });
 
-    it('returns a rejected promise on undefined', () => {
-        expect(rule.validate()).rejects.toBeInstanceOf(InvalidValueError);
+    it('returns a rejected promise on undefined', async () => {
+        await expect(rule.validate()).rejects.toBeInstanceOf(InvalidValueError);
     });
 });

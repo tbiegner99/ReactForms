@@ -1,8 +1,10 @@
 {
     "presets": [["es2015", { "modules": false }], "es2016", "react", "env"],
     "plugins": ["transform-es2015-modules-commonjs", "transform-class-properties"],
-
+    "sourceMap":"inline",
     "env": {
-        "test": {}
+        "test": {
+          "sourceMap":"inline",
+        }
     }
 }

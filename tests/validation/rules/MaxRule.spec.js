@@ -46,10 +46,10 @@ describe('MaxRule', () => {
             expect(typeof rule.validate).toEqual('function');
         });
 
-        it('does not validate null value', () => {
-            expect(rule.validate(null)).resolves.toBeUndefined();
-            expect(rule.validate()).resolves.toBeUndefined();
-            expect(rule.validate(0)).rejects.toBeDefined();
+        it('does not validate null value', async () => {
+            await expect(rule.validate(null)).resolves.toBeUndefined();
+            await expect(rule.validate()).resolves.toBeUndefined();
+            await expect(rule.validate(0)).rejects.toBeDefined();
         });
     });
 
@@ -58,14 +58,13 @@ describe('MaxRule', () => {
         beforeEach(() => {
             rule = new MaxRule([5]);
         });
-        it('returns a  resolved promise if value is less than or equal to argument', () => {
-            expect(rule.validate(-1)).resolves.toBeUndefined();
-            expect(rule.validate(5)).resolves.toBeUndefined();
+        it('returns a  resolved promise if value is less than or equal to argument', async () => {
+            await expect(rule.validate(-1)).resolves.toBeUndefined();
+            await expect(rule.validate(5)).resolves.toBeUndefined();
         });
 
-        it('returns a  rejected promise if value is not less than or equal to argument', () => {
-            expect(rule.validate('-1')).rejects.toBeDefined();
-            expect(rule.validate(6)).rejects.toBeDefined();
+        it('returns a  rejected promise if value is not less than or equal to argument', async () => {
+            await expect(rule.validate(6)).rejects.toBeDefined();
         });
     });
 
@@ -74,14 +73,16 @@ describe('MaxRule', () => {
         beforeEach(() => {
             rule = new MaxRule(['cherry']);
         });
-        it('returns a  resolved promise if value is less than or equal to argument', () => {
-            expect(rule.validate('apple')).resolves.toBeUndefined();
-            expect(rule.validate('c')).resolves.toBeUndefined();
+        it('returns a  resolved promise if value is less than or equal to argument', async () => {
+            await expect(rule.validate('apple')).resolves.toBeUndefined();
+            await expect(rule.validate('c')).resolves.toBeUndefined();
+            await expect(rule.validate(5)).resolves.toBeUndefined();
+            await expect(rule.validate('PEAR')).resolves.toBeUndefined();
         });
 
-        it('returns a  rejected promise if value is not less than or equal to argument', () => {
-            expect(rule.validate(5)).rejects.toBeDefined();
-            expect(rule.validate('pear')).rejects.toBeDefined();
+        it('returns a  rejected promise if value is not less than or equal to argument', async () => {
+            await expect(rule.validate('~')).rejects.toBeDefined();
+            await expect(rule.validate('pear')).rejects.toBeDefined();
         });
     });
 
@@ -90,12 +91,12 @@ describe('MaxRule', () => {
         beforeEach(() => {
             rule = new MaxRule((value) => value.field > 1);
         });
-        it('returns a  resolved promise if value is less than or equal to argument', () => {
-            expect(rule.validate({ field: 2 })).rejects.toBeDefined();
+        it('returns a  resolved promise if value is less than or equal to argument', async () => {
+            await expect(rule.validate({ field: 2 })).resolves.toBeUndefined();
         });
 
-        it('returns a  rejected promise if value is not less than or equal to argument', () => {
-            expect(rule.validate({ field: 0 })).rejects.toBeDefined();
+        it('returns a  rejected promise if value is not less than or equal to argument', async () => {
+            await expect(rule.validate({ field: 0 })).rejects.toBeDefined();
         });
     });
 
@@ -104,12 +105,16 @@ describe('MaxRule', () => {
         beforeEach(() => {
             rule = new MaxRule(new Date());
         });
-        it('returns a  resolved promise if value is less than or equal to argument', () => {
-            expect(rule.validate(new Date(0))).resolves.toBeDefined();
+        it('returns a  resolved promise if value is less than or equal to argument', async () => {
+            await expect(rule.validate(new Date(0))).resolves.toBeUndefined();
+            const currentTime = new Date().getTime();
+            await expect(rule.validate(currentTime - 1000)).resolves.toBeUndefined();
         });
 
-        it('returns a  rejected promise if value is not less than or equal to argument', () => {
-            expect(rule.validate(new Date(Number.MAX_VALUE))).rejects.toBeDefined();
+        it('returns a  rejected promise if value is not less than or equal to argument', async () => {
+            const currentTime = new Date().getTime();
+            await expect(rule.validate(new Date(currentTime + 1000))).rejects.toBeDefined();
+            await expect(rule.validate(currentTime + 1000)).rejects.toBeDefined();
         });
     });
 });

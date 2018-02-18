@@ -12,8 +12,9 @@ describe('Assertion utility', () => {
     });
 
     it('asserts something is instance of type', () => {
-        const assertError = () => Assert.toBeInstanceOf({}, Error);
+        const assertError = (msg) => Assert.toBeInstanceOf({}, Error, msg);
         expect(assertError).toThrow(`Expected object to be instance of Error`);
+        expect(assertError.bind(null, 'must be error')).toThrow(`must be error`);
     });
 
     it('asserts something can be parsed to integer', () => {

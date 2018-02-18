@@ -23,6 +23,14 @@ describe('Validation enforcer', () => {
         expect(ValueEnforcer.toBeString('b', 'a')).toEqual('b');
     });
 
+    it('uses default value if value is not number', () => {
+        expect(ValueEnforcer.toBeNumber(4, {})).toEqual(4);
+        expect(ValueEnforcer.toBeNumber('4.23', 'a')).toEqual('a');
+        expect(ValueEnforcer.toBeNumber(6.7, 'a')).toEqual(6.7);
+        expect(ValueEnforcer.toBeNumber(0, 'a')).toEqual(0);
+        expect(ValueEnforcer.toBeNumber('ba5', 7)).toEqual(7);
+    });
+
     it('uses default value if value is not func', () => {
         const func = () => {};
         expect(ValueEnforcer.toBeFunction(4, 3)).toEqual(3);

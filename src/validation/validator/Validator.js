@@ -1,6 +1,9 @@
 import ArrayUtilities from '../../utils/ArrayUtilities';
 
-const wrapPromise = (config, value) =>
+// NOTE: to avoid fast failure and ensure all rules in a rule set
+// get executed, always resolve rule evaluations,
+// we determine rule set failure when merging results
+const wrapRuleEvaluationInPromiseToEnforceAllRuleExecution = (config, value) =>
     new Promise((resolve) =>
         config.rule
             .validate(value)
@@ -8,11 +11,11 @@ const wrapPromise = (config, value) =>
             .catch(() => {
                 let { message } = config;
                 if (typeof message === 'function') {
-                    message = message(value);
+                    message = message(value, config.rule);
                 }
                 const errObject = {
                     ruleName: config.name,
-                    isValid: false,
+                    valid: false,
                     message
                 };
                 resolve(errObject);
@@ -23,22 +26,24 @@ const combineErrors = (errs) => {
     const numberOfRulesViolated = rulesViolated.length;
     const isAllValid = numberOfRulesViolated === 0;
     return {
-        isAllValid,
+        valid: isAllValid,
         message: isAllValid ? null : rulesViolated[0].message,
-        rulesViolated: numberOfRulesViolated,
-        invalidElements: isAllValid ? 0 : 1
+        numberOfRulesViolated,
+        numberOfInvalidElements: isAllValid ? 0 : 1
     };
 };
 
 const ruleSetToPromiseSet = (ruleSet, value) =>
-    ruleSet.map((ruleConfig) => wrapPromise(ruleConfig, value));
+    ruleSet.map((ruleConfig) =>
+        wrapRuleEvaluationInPromiseToEnforceAllRuleExecution(ruleConfig, value)
+    );
 
 const evaluateRuleSet = (value, ruleSet) =>
     new Promise((resolve, reject) => {
         Promise.all(ruleSetToPromiseSet(ruleSet, value))
             .then(combineErrors)
             .then((errObject) => {
-                if (errObject.isAllValid) {
+                if (errObject.valid) {
                     resolve(errObject);
                 } else {
                     reject(errObject);
@@ -46,17 +51,17 @@ const evaluateRuleSet = (value, ruleSet) =>
             });
     });
 
-export const privates = {};
-
 const validate = (value, config) => {
+    // a config will be an array of rule configurations
     const rulesByPriority = ArrayUtilities.partitionBy(config, (item) => item.priority);
-    // get sorted array of array of configurations orderd by priority
+    // this will be an array of arrays sorted by the priority (key)
     const rulesSetsSortedByPriority = Object.keys(rulesByPriority)
         .sort()
         .map((key) => rulesByPriority[key]);
     const rulesSetsAsPromiseArray = rulesSetsSortedByPriority.map(
         evaluateRuleSet.bind(null, value)
     );
+    // a success will only have one object in the array because of result merging
     return Promise.all(rulesSetsAsPromiseArray).then((successObjects) => successObjects[0]);
 };
 

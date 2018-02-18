@@ -23,22 +23,22 @@ describe.only('NumberRule', () => {
             expect(typeof rule.validate).toEqual('function');
         });
 
-        it('returns a resolved promise for decimal numbers', () =>
+        it('returns a resolved promise for decimal numbers', async () =>
             expect(rule.validate('34.56')).resolves.toBe(34.56));
 
-        it('returns a resolved promise for integers', () =>
+        it('returns a resolved promise for integers', async () =>
             expect(rule.validate('34')).resolves.toBe(34));
 
-        it('returns a resolved promise for negative numbers', () =>
+        it('returns a resolved promise for negative numbers', async () =>
             expect(rule.validate('-34.56')).resolves.toBe(-34.56));
 
-        it('returns a rejected promise for invalid number string', () =>
+        it('returns a rejected promise for invalid number string', async () =>
             expect(rule.validate('a9a')).rejects.toBeDefined());
 
-        it('returns a rejected promise for valid partial number string', () =>
+        it('returns a rejected promise for valid partial number string', async () =>
             expect(rule.validate('14.')).resolves.toBe(14));
 
-        it('returns a rejected promise for invalid partial number string2', () =>
+        it('returns a rejected promise for invalid partial number string2', async () =>
             expect(rule.validate('-')).rejects.toBeDefined());
     });
 });

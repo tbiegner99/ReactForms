@@ -45,10 +45,10 @@ describe.only('RegexRule', () => {
             expect(typeof rule.validate).toEqual('function');
         });
 
-        it('returns a resolved promise when regex matches', () =>
+        it('returns a resolved promise when regex matches', async () =>
             expect(rule.validate('works')).resolves.toBeUndefined());
 
-        it('returns a rejected promise when regex fails to match', () =>
+        it('returns a rejected promise when regex fails to match', async () =>
             expect(rule.validate('itworks')).rejects.toBeDefined());
     });
 });
