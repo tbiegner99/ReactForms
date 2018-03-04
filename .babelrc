@@ -1,10 +1,6 @@
 {
-    "presets": [["es2015", { "modules": false }], "es2016", "react", "env"],
-    "plugins": ["transform-es2015-modules-commonjs", "transform-class-properties"],
-    "sourceMap":"inline",
-    "env": {
-        "test": {
-          "sourceMap":"inline",
-        }
-    }
+    "presets": ["es2015", "es2016","es2017", "react", "env"],
+    "plugins": [    "transform-class-properties",
+        "transform-object-rest-spread"],
+    "sourceMap":"inline"
 }
