@@ -36,9 +36,21 @@ export default class GroupableElement extends FormElement {
     super.willMount(componentWillMount);
   }
 
+  willUnmount(componentWillUnmount) {
+    this._unregisterSelfWithGroup();
+    super.willUnmount(componentWillUnmount);
+  }
+
   _registerSelfWithGroup() {
     if (this.context.inputGroup) {
       return this.context.inputGroup.registerElement(this);
+    }
+    return null;
+  }
+
+  _unregisterSelfWithGroup() {
+    if (this.context.inputGroup) {
+      return this.context.inputGroup.unregister(this.groupId);
     }
     return null;
   }

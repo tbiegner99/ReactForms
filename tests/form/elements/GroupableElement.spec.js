@@ -15,22 +15,36 @@ describe('Groupable Element Tests', () => {
       .select();
   });
 
+  it('does nothing on unmount without group, but does not throw error', () => {
+    const el = mount(<GroupableElement />);
+    el.unmount();
+  });
+
   describe('when inside a parent context', () => {
     let group;
     let el;
+    let elItem;
     let registerSpy;
+    let unregisterSpy;
     beforeEach(() => {
       group = mount(<InputGroup />).instance();
       registerSpy = jest.spyOn(group, 'registerElement');
-      el = mount(<GroupableElement />, {
+      unregisterSpy = jest.spyOn(group, 'unregister');
+      elItem = mount(<GroupableElement />, {
         context: {
           inputGroup: group
         }
-      }).instance();
+      });
+      el = elItem.instance();
     });
 
     it('registers itself on mount', () => {
       expect(registerSpy).toHaveBeenCalledWith(el);
+    });
+
+    it('unregisters itself on unmount', () => {
+      elItem.unmount();
+      expect(unregisterSpy).toHaveBeenCalledWith(el.groupId);
     });
 
     it('exposes the unique id of the group', () => {

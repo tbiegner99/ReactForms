@@ -180,8 +180,4 @@ describe('Input group Tests', () => {
       expect(group.value).toEqual([2]);
     });
   });
-
-  describe('nesting of input groups', () => {
-    it('correctly assembles value object');
-  });
 });
