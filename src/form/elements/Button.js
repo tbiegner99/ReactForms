@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormElement from '../FormElement';
+import GroupableElement from './GroupableElement';
 import { NoOperation } from '../../utils/CommonFunctions';
 
-export default class Button extends FormElement {
+export default class Button extends GroupableElement {
   static propTypes = {
-    ...FormElement.defaultProps,
+    ...GroupableElement.propTypes,
     onClick: PropTypes.func
   };
 
   static defaultProps = {
-    ...FormElement.defaultProps,
+    ...GroupableElement.defaultProps,
     onClick: NoOperation
   };
 

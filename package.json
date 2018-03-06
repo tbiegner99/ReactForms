@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest --config jest.config.js",
     "test-watch": "jest",
-    "test-debug": "node --inspect ./node_modules/jest/bin/jest.js --watch ",
+    "test-debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --watch ",
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "repository": {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Button from '../../../src/form/elements/Button';
+import GroupableElement from '../../../src/form/elements/GroupableElement';
 import Form from '../../../src/form/Form';
 
 describe('Button Tests', () => {
@@ -11,6 +12,10 @@ describe('Button Tests', () => {
 
   it('exists', () => {
     expect(typeof Button).toBe('function');
+  });
+
+  it('is a groupable element', () => {
+    expect(button).toBeInstanceOf(GroupableElement);
   });
 
   it('has a default button type', () => {
