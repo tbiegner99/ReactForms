@@ -1,22 +1,63 @@
-import React from "react"
-import GroupableElement from "./GroupableElement"
-export default class Checkbox extends GroupableElement{
-    static defaultClassname = "__checkboxElement__"
+import React from 'react';
+import GroupableElement from './GroupableElement';
+import ValueEnforcer from '../../utils/ValueEnforcer';
 
-    constructor(props) {
-        super(props)
-    }
+import './styles/Checkbox.css';
 
-    async onClick(e) {
-        await super.onChange(!this.state.value);
-        
-    }
+export default class Checkbox extends GroupableElement {
+  static defaultClassname = '__checkboxElement__';
 
-    render() {
-        const {className} = this.props;
-        return <div onClick={this.onClick.bind(this)} className={`${Checkbox.defaultClassname} ${className}`}>
-             <svg>
-            </svg>
-        </div>
-    }
+  constructor(props) {
+    super(props);
+    let defaultChecked = ValueEnforcer.toNotBeNullOrUndefined(props.defaultChecked, false);
+    defaultChecked = ValueEnforcer.toNotBeNullOrUndefined(props.checked, defaultChecked);
+    this.state = Object.assign(this.state, { checked: defaultChecked });
+  }
+
+  get value() {
+    const { checked } = this.state;
+    const { checkedValue = true, falseValue = false } = this.props;
+
+    return checked ? checkedValue : falseValue;
+  }
+
+  async onClick() {
+    await this.setState({
+      checked: !this.state.checked
+    });
+    await super.onChange(this.state.checked, this.value);
+  }
+
+  render() {
+    const { className, label } = this.props;
+    const { checked } = this.state;
+    return (
+      <div
+        onClick={() => this.onClick()}
+        className={`${Checkbox.defaultClassname} ${className} ${checked && 'checked'}`}
+      >
+        <svg viewBox="0 0 10 10" width="15" height="15">
+          <rect
+            x="0"
+            y="0"
+            stroke="#666"
+            strokeWidth=".5"
+            fill="rgba(0,0,0,0)"
+            rx="3"
+            ry="3"
+            height="10"
+            width="10"
+          />
+          <path
+            d="M1.5 6L4 8L8 1.5"
+            strokeWidth="1.5"
+            className={`checkMark ${checked && 'checked'}`}
+            fill="none"
+            stroke="#666"
+          />
+        </svg>
+        {label}
+      </div>
+    );
+  }
 }

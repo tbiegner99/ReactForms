@@ -1,0 +1,8 @@
+.checkMark {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 20;
+    transition: all .5s linear;
+}
+.checkMark.checked {
+    stroke-dashoffset: 0;
+}

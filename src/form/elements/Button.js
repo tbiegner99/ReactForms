@@ -44,12 +44,11 @@ export default class Button extends GroupableElement {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, children } = this.props;
     return (
-      <button
-        onClick={(e) => this.onClick(e)}
-        className={`${this.defaultClassName} ${className}`}
-      />
+      <button onClick={(e) => this.onClick(e)} className={`${this.defaultClassName} ${className}`}>
+        {children}
+      </button>
     );
   }
 }

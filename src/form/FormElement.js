@@ -43,9 +43,9 @@ export default class FormElement extends React.Component {
     this.componentWillUnmount = this.willUnmount.bind(this, this.componentWillUnmount);
   }
 
-  async onChange(newValue) {
+  async onChange(newValue, ...args) {
     const { onChange } = this.props;
-    const triggerEvent = () => onChange(newValue, this);
+    const triggerEvent = () => onChange(newValue, this, ...args);
 
     if (this.validateOnChange) {
       await this.fullValidate()
