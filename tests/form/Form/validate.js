@@ -48,7 +48,9 @@ export default () => {
       element.setProps({ value: 5 });
       try {
         await elInstance.validate();
-      } catch (e) {}
+      } catch (e) {
+        // do nothing
+      }
       expect(form.validationState).toEqual({
         valid: true,
         uniqueId: null,
@@ -70,12 +72,16 @@ export default () => {
       element.setProps({ value: 'A' });
       try {
         await elInstance.validate();
-      } catch (e) {}
+      } catch (e) {
+        // expected case
+      }
       expect(stateChangeSpy).not.toHaveBeenCalled();
       element.setProps({ value: 'A', name: null });
       try {
         await elInstance.validate();
-      } catch (e) {}
+      } catch (e) {
+        // expected case
+      }
       expect(form.validationState).toEqual({
         valid: true,
         uniqueId: null,
@@ -89,12 +95,16 @@ export default () => {
       element.setProps({ value: 'A' });
       try {
         await elInstance.validate();
-      } catch (e) {}
+      } catch (e) {
+        // expect error
+      }
       expect(stateChangeSpy).not.toHaveBeenCalled();
       element.setProps({ value: 5 });
       try {
         await elInstance.validate();
-      } catch (e) {}
+      } catch (e) {
+        // expect error
+      }
 
       expect(stateChangeSpy).toHaveBeenCalled();
     });

@@ -28,13 +28,19 @@ export default class Checkbox extends GroupableElement {
     await super.onChange(this.state.checked, this.value);
   }
 
+  accessibilityClick() {}
+
   render() {
-    const { className, label } = this.props;
+    const { className, label, tabIndex = 0 } = this.props;
     const { checked } = this.state;
     return (
       <div
         onClick={() => this.onClick()}
+        onKeyDown={(evt) => this.accessibilityClick(evt)}
         className={`${Checkbox.defaultClassname} ${className} ${checked && 'checked'}`}
+        role="checkbox"
+        aria-checked={checked}
+        tabIndex={tabIndex}
       >
         <svg viewBox="0 0 10 10" width="15" height="15">
           <rect

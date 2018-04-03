@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Checkbox from '../../../src/form/elements/Checkbox';
 import GroupableElement from '../../../src/form/elements/GroupableElement';
-import Form from '../../../src/form/Form';
 
 describe('checkbox', () => {
   it('is a function', () => {
