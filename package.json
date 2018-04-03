@@ -8,11 +8,15 @@
   },
   "scripts": {
     "test": "jest --config jest.config.js",
+    "coverage": "npm run test -- --coverage",
     "test-watch": "jest",
     "test-debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --watch ",
     "storybook": "start-storybook -p 6006 -c .storybook",
     "storybook-setup": "getstorybook",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "lint-fix": "eslint --fix src tests",
+    "lint": "eslint src tests",
+    "prepush": "npm run coverage"
   },
   "repository": {
     "type": "git",
@@ -59,6 +63,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.6.1",
+    "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.1.4",
     "jsdoc": "^3.5.5",

@@ -35,7 +35,7 @@ describe('checkbox', () => {
       });
       it('dispatches change event on click', async () => {
         await instance.onClick();
-        expect(onChange).toHaveBeenCalledWith(true, instance);
+        expect(onChange).toHaveBeenCalledWith(true, instance, true);
       });
       it('toggles checked state on click', async () => {
         await instance.onClick();
