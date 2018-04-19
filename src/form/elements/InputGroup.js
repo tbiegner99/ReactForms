@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import GroupableElement from './GroupableElement';
 
@@ -51,10 +52,20 @@ export default class InputGroup extends GroupableElement {
 
   selectElement(elementId) {
     if (!this.multiValue) {
+      this.clear();
       this[_selectedElements] = { [elementId]: true };
     } else {
       this[_selectedElements][elementId] = !this[_selectedElements][elementId];
     }
+
+    this.onChange(this.value, this[_elements][elementId]);
+  }
+
+  clear() {
+    const selectedElementIds = Object.keys(this.selectedElements);
+    selectedElementIds.forEach((id) => {
+      this[_elements][id].unselect();
+    });
   }
 
   registerElement(el) {
@@ -80,5 +91,9 @@ export default class InputGroup extends GroupableElement {
     return {
       inputGroup: this
     };
+  }
+
+  render() {
+    return <div>{this.props.children}</div>;
   }
 }

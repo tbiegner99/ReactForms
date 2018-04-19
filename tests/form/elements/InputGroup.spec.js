@@ -12,8 +12,10 @@ class LiteralGroupElement extends GroupableElement {
 
 describe('Input group Tests', () => {
   let group;
+  let onChange;
   beforeEach(() => {
-    group = mount(<InputGroup />).instance();
+    onChange = jest.fn();
+    group = mount(<InputGroup onChange={onChange} />).instance();
   });
 
   it('is a Form Element', () => {
@@ -45,7 +47,9 @@ describe('Input group Tests', () => {
     const el = mount(<InputGroup />).instance();
     const execution = () => group.registerElement(el);
     expect(execution).not.toThrow(
-      new Error('A groupable element must be registered to Input group')
+      new Error(
+        'A groupab selected elemen selected elemen selected elements on first selectionts on first selectionts on first selectionle element must be registered to Input group'
+      )
     );
     expect(group.elements.length).toBe(1);
     expect(group.elements[0]).toBe(el);
@@ -113,6 +117,11 @@ describe('Input group Tests', () => {
       expect(group.selectedElements).toEqual({ 0: true });
     });
 
+    it('fires onChangeEvent with selectedValues', () => {
+      el.select();
+      expect(onChange).toHaveBeenCalledWith(el.value, group, el);
+    });
+
     it('changes selection value on single value selection', () => {
       el.select();
       expect(group.selectedElements).toEqual({ 0: true });
@@ -133,6 +142,53 @@ describe('Input group Tests', () => {
       expect(group.value).toEqual(1);
       group.unregister(el.groupId);
       expect(group.value).toEqual(null);
+    });
+
+    it('triggers element deselection', async () => {
+      const spy = jest.spyOn(group, 'clear');
+      await el.select();
+      await el2.select();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('clear', () => {
+    let el;
+    let el2;
+    let el3;
+    let elSpy;
+    let el2Spy;
+    let el3Spy;
+    beforeEach(async () => {
+      group = mount(<InputGroup multiValue />).instance();
+      el = mount(<LiteralGroupElement value={1} />, {
+        context: {
+          inputGroup: group
+        }
+      }).instance();
+      el2 = mount(<LiteralGroupElement value={2} />, {
+        context: {
+          inputGroup: group
+        }
+      }).instance();
+      el3 = mount(<LiteralGroupElement value={3} />, {
+        context: {
+          inputGroup: group
+        }
+      }).instance();
+
+      await el.select();
+      await el3.select();
+      elSpy = jest.spyOn(el, 'unselect');
+      el2Spy = jest.spyOn(el2, 'unselect');
+      el3Spy = jest.spyOn(el3, 'unselect');
+      await group.clear();
+    });
+
+    it('unselects selected elements', () => {
+      expect(elSpy).toHaveBeenCalledTimes(1);
+      expect(el2Spy).not.toHaveBeenCalled();
+      expect(el3Spy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -178,6 +234,13 @@ describe('Input group Tests', () => {
       expect(group.value).toEqual([1, 2]);
       group.unregister(el.groupId);
       expect(group.value).toEqual([2]);
+    });
+
+    it('does not trigger element deselection', async () => {
+      const spy = jest.spyOn(group, 'clear');
+      await el.select();
+      await el2.select();
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 });

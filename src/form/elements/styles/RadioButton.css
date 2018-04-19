@@ -1,0 +1,32 @@
+.outerCircle {
+    stroke:#666;
+    stroke-width:.5;
+    fill:rgba(0,0,0,0);
+}
+
+.radioFill {
+    transition: all .2s ease-in-out;
+    opacity: 0;
+    stroke:none;
+    fill: #333;
+}
+
+.radioFill.checked {
+    opacity: 1;
+    transition: all .2s ease-in-out;
+    transition-delay:.5s;
+}
+
+.outerStroke {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    transition: all .5s ease-in-out;
+    fill:none;
+    stroke-width:.75;
+    stroke: #333;
+}
+
+.outerStroke.checked {
+    stroke-dashoffset: 0;
+    transition: all .5s ease-in-out;
+}

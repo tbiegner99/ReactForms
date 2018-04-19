@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import FormElement from '../FormElement';
+import ValueEnforcer from '../../utils/ValueEnforcer';
 
 const _groupId = Symbol('groupId');
 export default class GroupableElement extends FormElement {
@@ -19,16 +20,41 @@ export default class GroupableElement extends FormElement {
   constructor(props) {
     super(props);
     this[_groupId] = null;
+    let defaultSelected = ValueEnforcer.toNotBeNullOrUndefined(props.selected, false);
+    defaultSelected = ValueEnforcer.toNotBeNullOrUndefined(props.defaultSelected, defaultSelected);
+
+    this.state = Object.assign(this.state, { selected: defaultSelected });
   }
 
   get groupId() {
     return this[_groupId];
   }
 
-  select() {
+  get selected() {
+    return this.state.selected;
+  }
+
+  async select() {
     if (this.context.inputGroup) {
       this.context.inputGroup.selectElement(this.groupId, this);
     }
+    await this.setState({
+      selected: true
+    });
+  }
+
+  async toggle() {
+    if (!this.state.selected) {
+      await this.select();
+    } else {
+      await this.unselect();
+    }
+  }
+
+  async unselect() {
+    await this.setState({
+      selected: false
+    });
   }
 
   willMount(componentWillMount) {

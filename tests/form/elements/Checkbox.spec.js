@@ -12,8 +12,26 @@ describe('checkbox', () => {
     expect(Checkbox.defaultClassname).toEqual('__checkboxElement__');
   });
 
-  it('is a groupable element', () => {
+  it('is a groupable elemendescribe("default checked values")t', () => {
     expect(new Checkbox({})).toBeInstanceOf(GroupableElement);
+  });
+
+  describe('default checked values', () => {
+    it('sets default checked state when defaultChecked prop is true', () => {
+      expect(new Checkbox({ defaultChecked: true }).checked).toEqual(true);
+    });
+    it('sets default checked state when defaultSelected prop is true', () => {
+      expect(new Checkbox({ defaultSelected: true }).checked).toEqual(true);
+    });
+    it('sets default checked state when checked prop is true', () => {
+      expect(new Checkbox({ checked: true }).checked).toEqual(true);
+    });
+    it('uses defaultChecked prop when defaultCheked and checked are both supplied', () => {
+      expect(new Checkbox({ defaultChecked: false, checked: true }).checked).toEqual(false);
+    });
+    it('uses defaultChecked prop when defaultCheked and defaultSelected are both supplied', () => {
+      expect(new Checkbox({ defaultChecked: false, defaultSelected: true }).checked).toEqual(false);
+    });
   });
 
   describe('with valid instance', () => {
@@ -24,6 +42,10 @@ describe('checkbox', () => {
       onChange = jest.fn();
       el = mount(<Checkbox className="myClass" onChange={onChange} />);
       instance = el.instance();
+    });
+
+    it('has checked attribute', () => {
+      expect(instance.checked).toEqual(false);
     });
 
     describe('actions', () => {
@@ -38,9 +60,20 @@ describe('checkbox', () => {
       });
       it('toggles checked state on click', async () => {
         await instance.onClick();
-        expect(instance.state.checked).toEqual(true);
+        expect(instance.state.selected).toEqual(true);
         await instance.onClick();
-        expect(instance.state.checked).toEqual(false);
+        expect(instance.state.selected).toEqual(false);
+      });
+    });
+    describe('accessibility', () => {
+      it('fires onClick on accessibilityClick', async () => {
+        await instance.accessibilityClick();
+        expect(onChange).toHaveBeenCalled();
+      });
+      it('fires changeEvent when key is pressed with focus', () => {
+        const accessibilityClickSpy = jest.spyOn(instance, 'accessibilityClick');
+        el.find('.__checkElementRoot__').simulate('keyDown');
+        expect(accessibilityClickSpy).toHaveBeenCalled();
       });
     });
 
@@ -75,6 +108,8 @@ describe('checkbox', () => {
         });
       });
     });
+
+    // to do write test with input group
 
     describe('rendering', () => {
       it('renders a container with default class name', () => {
