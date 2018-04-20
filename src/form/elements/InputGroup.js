@@ -50,6 +50,15 @@ export default class InputGroup extends GroupableElement {
     return this.multiValue ? selectedValues : selectedValues[0] || null;
   }
 
+  async unselectElement(elementId) {
+    if (!this.multiValue) {
+      return false;
+    }
+    delete this[_selectedElements][elementId];
+    this.onChange(this.value, this[_elements][elementId]);
+    return true;
+  }
+
   selectElement(elementId) {
     if (!this.multiValue) {
       this.clear();

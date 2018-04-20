@@ -21,7 +21,7 @@ describe('Radio button', () => {
   it('renders fill when checked', () => {
     expect(el.find('.outerStroke.checked').length).toEqual(0);
     expect(el.find('.radioFill.checked').length).toEqual(0);
-    el.setState({ checked: true });
+    el.setState({ selected: true });
     expect(el.find('.outerStroke.checked').length).toEqual(1);
     expect(el.find('.radioFill.checked').length).toEqual(1);
   });

@@ -22,6 +22,10 @@ describe('Input group Tests', () => {
     expect(group).toBeInstanceOf(GroupableElement);
   });
 
+  it('is not multivalued', () => {
+    expect(group.multiValue).toBe(false);
+  });
+
   it('sets itself as group context', () => {
     const expected = { inputGroup: group };
     expect(group.getChildContext()).toEqual(expected);
@@ -108,37 +112,42 @@ describe('Input group Tests', () => {
       }).instance();
     });
 
+    it('calls change with correct value', async () => {
+      await el2.select();
+      expect(onChange).toHaveBeenCalledWith(2, group, el2);
+    });
+
     it('exposes selected elements', () => {
       expect(group.selectedElements).toEqual({});
     });
 
-    it('initializes selected elements on first selection', () => {
-      el.select();
+    it('initializes selected elements on first selection', async () => {
+      await el.select();
       expect(group.selectedElements).toEqual({ 0: true });
     });
 
-    it('fires onChangeEvent with selectedValues', () => {
-      el.select();
+    it('fires onChangeEvent with selectedValues', async () => {
+      await el.select();
       expect(onChange).toHaveBeenCalledWith(el.value, group, el);
     });
 
-    it('changes selection value on single value selection', () => {
-      el.select();
+    it('changes selection value on single value selection', async () => {
+      await el.select();
       expect(group.selectedElements).toEqual({ 0: true });
-      el2.select();
+      await el2.select();
       expect(group.selectedElements).toEqual({ 1: true });
     });
 
-    it('returns singular value as its value', () => {
+    it('returns singular value as its value', async () => {
       expect(group.value).toEqual(null);
-      el.select();
+      await el.select();
       expect(group.value).toEqual(1);
-      el2.select();
+      await el2.select();
       expect(group.value).toEqual(2);
     });
 
-    it('removed selected elements from selected elements on deregister', () => {
-      el.select();
+    it('removed selected elements from selected elements on deregister', async () => {
+      await el.select();
       expect(group.value).toEqual(1);
       group.unregister(el.groupId);
       expect(group.value).toEqual(null);
@@ -149,6 +158,13 @@ describe('Input group Tests', () => {
       await el.select();
       await el2.select();
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('element unselection', () => {
+    it('cancels the event for single value selection groups', async () => {
+      const cancel = await group.unselectElement();
+      expect(cancel).toBe(false);
     });
   });
 
@@ -195,8 +211,10 @@ describe('Input group Tests', () => {
   describe('multi-value group', () => {
     let el;
     let el2;
-    beforeEach(() => {
-      group = mount(<InputGroup multiValue />).instance();
+    let changeFn;
+    beforeEach(async () => {
+      changeFn = jest.fn();
+      group = mount(<InputGroup multiValue onChange={changeFn} />).instance();
       el = mount(<LiteralGroupElement value={1} />, {
         context: {
           inputGroup: group
@@ -207,30 +225,38 @@ describe('Input group Tests', () => {
           inputGroup: group
         }
       }).instance();
-      el.select();
+      await el.select();
     });
 
-    it('toggles elements on selection', () => {
+    it('returns an array as its value', async () => {
+      expect(group.value).toEqual([1]);
+    });
+    it('calls on change with value', async () => {
+      await el2.select();
+      expect(changeFn).toHaveBeenCalledWith([1, 2], group, el2);
+    });
+
+    it('toggles elements on selection', async () => {
       expect(group.selectedElements).toEqual({ 0: true });
-      el.select();
+      await el.select();
       expect(group.selectedElements).toEqual({ 0: false });
     });
 
-    it('allowes multiple toggled elements', () => {
-      el2.select();
+    it('allowes multiple toggled elements', async () => {
+      await el2.select();
       expect(group.selectedElements).toEqual({ 0: true, 1: true });
     });
 
-    it('returns an array of values as its value', () => {
+    it('returns an array of values as its value', async () => {
       expect(group.value).toEqual([1]);
-      el2.select();
+      await el2.select();
       expect(group.value).toEqual([1, 2]);
-      el.select();
+      await el.select();
       expect(group.value).toEqual([2]);
     });
 
-    it('removed selected elements from selected elements on deregister', () => {
-      el2.select();
+    it('removed selected elements from selected elements on deregister', async () => {
+      await el2.select();
       expect(group.value).toEqual([1, 2]);
       group.unregister(el.groupId);
       expect(group.value).toEqual([2]);
@@ -241,6 +267,27 @@ describe('Input group Tests', () => {
       await el.select();
       await el2.select();
       expect(spy).not.toHaveBeenCalled();
+    });
+    describe('element unselection', () => {
+      beforeEach(async () => {
+        await el2.select();
+        jest.resetAllMocks();
+        await el.toggle();
+      });
+
+      it('fires on change event', () => {
+        expect(changeFn).toHaveBeenCalledWith([2], group, el);
+      });
+
+      it('deletes the correct value', () => {
+        expect(group.value).toEqual([2]);
+      });
+
+      it('returns an empty array when all elements deselected', async () => {
+        jest.resetAllMocks();
+        await el2.toggle();
+        expect(group.value).toEqual([]);
+      });
     });
   });
 });

@@ -35,18 +35,26 @@ export default class GroupableElement extends FormElement {
   }
 
   async select() {
-    if (this.context.inputGroup) {
-      this.context.inputGroup.selectElement(this.groupId, this);
-    }
     await this.setState({
       selected: true
     });
+
+    if (this.context.inputGroup) {
+      this.context.inputGroup.selectElement(this.groupId, this);
+    }
   }
 
   async toggle() {
     if (!this.state.selected) {
       await this.select();
     } else {
+      if (this.context.inputGroup) {
+        const proceed = await this.context.inputGroup.unselectElement(this.groupId, this);
+        if (proceed === false) {
+          return;
+        }
+      }
+
       await this.unselect();
     }
   }

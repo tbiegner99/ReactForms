@@ -41,7 +41,7 @@ describe('Groupable Element Tests', () => {
     let registerSpy;
     let unregisterSpy;
     beforeEach(() => {
-      group = mount(<InputGroup />).instance();
+      group = mount(<InputGroup multiValue />).instance();
       registerSpy = jest.spyOn(group, 'registerElement');
       unregisterSpy = jest.spyOn(group, 'unregister');
       elItem = mount(<GroupableElement />, {
@@ -52,7 +52,7 @@ describe('Groupable Element Tests', () => {
       el = elItem.instance();
     });
 
-    it('has seleced property', () => {
+    it('has selected property', () => {
       expect(el.selected).toEqual(false);
     });
 
@@ -74,13 +74,29 @@ describe('Groupable Element Tests', () => {
     });
 
     describe('unselect element function', () => {
-      it('does not call select element of group', () => {
+      beforeEach(async () => {
+        await el.select();
+      });
+      it('does not call select element of group', async () => {
         const selectSpy = jest.spyOn(group, 'selectElement');
-        el.unselect();
+        await el.unselect();
         expect(selectSpy).not.toHaveBeenCalledWith(el.groupId, el);
       });
+      it('calls unselect event of group on toggle', async () => {
+        const unselectSpy = jest.spyOn(group, 'unselectElement');
+        const stateSpy = jest.spyOn(el, 'setState');
+        await el.toggle();
+        expect(unselectSpy).toHaveBeenCalledWith(el.groupId, el);
+        expect(stateSpy).toHaveBeenCalledWith({ selected: false });
+      });
+      it('does not perform unselection if group cancels the unselection on toggle', async () => {
+        const unselectSpy = jest.spyOn(group, 'unselectElement').mockReturnValue(false);
+        const stateSpy = jest.spyOn(el, 'setState');
+        await el.toggle();
+        expect(unselectSpy).toHaveBeenCalledWith(el.groupId, el);
+        expect(stateSpy).not.toHaveBeenCalled();
+      });
       it('sets the selected state to false', async () => {
-        await el.select();
         expect(el.state.selected).toEqual(true);
         await el.unselect();
         expect(el.state.selected).toEqual(false);
@@ -88,9 +104,9 @@ describe('Groupable Element Tests', () => {
     });
 
     describe('select element function', () => {
-      it('calls select element of group', () => {
+      it('calls select element of group', async () => {
         const selectSpy = jest.spyOn(group, 'selectElement');
-        el.select();
+        await el.select();
         expect(selectSpy).toHaveBeenCalledWith(el.groupId, el);
       });
       it('sets the selected state', async () => {
