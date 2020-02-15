@@ -1,1 +1,4 @@
-env: jest: true;
+extends: ["airbnb", "prettier"]
+parser: "babel-eslint"
+env: 
+  jest: true
