@@ -9,7 +9,7 @@ import MaxRule from './rules/MaxRule';
 import RegexRule from './rules/RegexRule';
 // import RangeRule from './rules/RangeRule';
 // import GreaterThanZeroRule from './rules/GreaterThanZeroRule';
-// import EmailRule from './rules/RangeRule';
+import EmailRule from './rules/EmailRule';
 // import PhoneRule from './rules/RangeRule';
 // import DateRule from './rules/DateRule';
 // import CustomRule from './rules/CustomRule';
@@ -17,21 +17,21 @@ import RegexRule from './rules/RegexRule';
 // import CreditCardNumberRule from './rules/CreditCardNumberRule';
 
 export default {
-    [RequiredRule.ruleName]: RequiredRule,
-    [LengthMinRule.ruleName]: LengthMinRule,
-    [LengthMaxRule.ruleName]: LengthMaxRule,
-    [LengthRangeRule.ruleName]: LengthRangeRule,
-    [MinRule.ruleName]: MinRule,
-    [MaxRule.ruleName]: MaxRule,
-    // [RangeRule.ruleName]: RangeRule,
-    [RegexRule.ruleName]: RegexRule,
-    // [EmailRule.ruleName]: EmailRule,
-    // [PhoneRule.ruleName]: PhoneRule,
-    [NumberRule.ruleName]: NumberRule,
-    // [GreaterThanZeroRule.ruleName]: GreaterThanZeroRule,
-    [IntegerRule.ruleName]: IntegerRule
-    // [CustomRule.ruleName]: CustomRule,
-    // [ZipcodeRule.ruleName]: ZipcodeRule,
-    // [CreditCardNumberRule.ruleName]: CreditCardNumberRule,
-    // [DateRule.ruleName]: DateRule,
+  [RequiredRule.ruleName]: RequiredRule,
+  [LengthMinRule.ruleName]: LengthMinRule,
+  [LengthMaxRule.ruleName]: LengthMaxRule,
+  [LengthRangeRule.ruleName]: LengthRangeRule,
+  [MinRule.ruleName]: MinRule,
+  [MaxRule.ruleName]: MaxRule,
+  // [RangeRule.ruleName]: RangeRule,
+  [RegexRule.ruleName]: RegexRule,
+  [EmailRule.ruleName]: EmailRule,
+  // [PhoneRule.ruleName]: PhoneRule,
+  [NumberRule.ruleName]: NumberRule,
+  // [GreaterThanZeroRule.ruleName]: GreaterThanZeroRule,
+  [IntegerRule.ruleName]: IntegerRule
+  // [CustomRule.ruleName]: CustomRule,
+  // [ZipcodeRule.ruleName]: ZipcodeRule,
+  // [CreditCardNumberRule.ruleName]: CreditCardNumberRule,
+  // [DateRule.ruleName]: DateRule,
 };

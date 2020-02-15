@@ -5,10 +5,10 @@ module.exports = {
   setupFiles: ['./tests/init.js'],
   coverageThreshold: {
     global: {
-      branches: 77.69,
-      functions: 70.2,
-      lines: 81.89,
-      statements: 82.15
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100
     }
   },
   moduleNameMapper: {

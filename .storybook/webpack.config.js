@@ -8,9 +8,8 @@
 
 module.exports = {
   devtool: 'source-map',
-  plugins: [
-    // your custom plugins
-  ],
+  watch: true,
+
   module: {
     rules: [
       {

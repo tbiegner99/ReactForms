@@ -48,21 +48,25 @@ export default class FormElement extends React.Component {
     const triggerEvent = () => onChange(newValue, this, ...args);
 
     if (this.validateOnChange) {
-      await this.fullValidate()
-        .then(triggerEvent)
-        .catch(triggerEvent);
+      try {
+        await this.fullValidate();
+      } catch (e) {
+        // do nothing
+      }
     }
     triggerEvent();
   }
 
-  async onBlur(e) {
+  async onBlur(evt) {
     const { onBlur } = this.props;
-    const triggerEvent = () => onBlur(e, this);
+    const triggerEvent = () => onBlur(evt, this);
 
     if (this.validateOnBlur) {
-      await this.fullValidate()
-        .then(triggerEvent)
-        .catch(triggerEvent);
+      try {
+        await this.fullValidate();
+      } catch (ex) {
+        // do nothing
+      }
     }
     triggerEvent();
   }
@@ -90,7 +94,7 @@ export default class FormElement extends React.Component {
   }
 
   get showErrors() {
-    return this.state.showErrors;
+    return this.state.showErrors && !this.state.ignoreErrorRendering;
   }
 
   get isValid() {
@@ -153,12 +157,16 @@ export default class FormElement extends React.Component {
     );
   }
 
-  willMount(componentWillMount) {
+  async willMount(componentWillMount) {
     this[_uniqueId] = this._registerSelf();
     if (typeof componentWillMount === 'function') {
       componentWillMount.bind(this)();
     }
-    this.validate();
+    try {
+      await this.validate({ ignoreFailure: true });
+    } catch (err) {
+      // do nothing
+    }
   }
 
   willUnmount(componentWillUnmount) {
@@ -166,6 +174,12 @@ export default class FormElement extends React.Component {
     if (typeof componentWillUnmount === 'function') {
       componentWillUnmount.bind(this)();
     }
+  }
+
+  yieldErrorLabelManagement() {
+    this.setState({
+      ignoreErrorRendering: true
+    });
   }
 
   async validate(opts) {
@@ -176,29 +190,26 @@ export default class FormElement extends React.Component {
     } catch (failureResults) {
       validationOutput = failureResults;
     }
-    Object.assign(validationOutput, { name: this.fullName });
+    Object.assign(validationOutput, {
+      name: this.fullName,
+      isForm: false,
+      uniqueId: this.uniqueId
+    });
     const elementIsValid = validationOutput.valid;
     const validationStateChange = elementIsValid !== this.state.valid;
-
-    return new Promise((resolve, reject) => {
-      this.setState(
-        {
-          valid: elementIsValid,
-          validationResults: validationOutput,
-          showErrors: options.showErrors
-        },
-        () => {
-          const { validationResults } = this.state;
-          if (!options.noNotify) this._notifyParentOfValidationState(validationResults);
-          this._raiseValidationStateChangeEvent(validationStateChange, validationResults);
-          if (elementIsValid) {
-            resolve(validationOutput);
-          } else {
-            reject(validationOutput);
-          }
-        }
-      );
+    await this.setState({
+      valid: elementIsValid,
+      validationResults: validationOutput,
+      showErrors: options.showErrors
     });
+
+    const { validationResults } = this.state;
+    if (!options.noNotify) this._notifyParentOfValidationState(validationResults);
+    this._raiseValidationStateChangeEvent(validationStateChange, validationResults);
+    if (!elementIsValid && !options.ignoreFailure) {
+      throw validationOutput;
+    }
+    return validationOutput;
   }
 
   async fullValidate() {
@@ -229,6 +240,13 @@ export default class FormElement extends React.Component {
       return this.context.parentForm.unregisterElement(this.uniqueId);
     }
     return null;
+  }
+
+  renderErrorLabel() {
+    if (!this.showErrors) {
+      return null;
+    }
+    return <span>{this.errorMessage}</span>;
   }
 
   render() {

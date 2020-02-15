@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Button from '../../../src/form/elements/Button';
+import Button, { SubmitButton } from '../../../src/form/elements/Button';
 import GroupableElement from '../../../src/form/elements/GroupableElement';
 import Form from '../../../src/form/Form';
 
@@ -38,6 +38,25 @@ describe('Button Tests', () => {
 
   it('returns a default class name with type', () => {
     expect(button.defaultClassName).toBe('__btn_default__');
+  });
+
+  describe('Submit Button', () => {
+    let wrapper;
+    let submit;
+    beforeEach(() => {
+      submit = jest.fn();
+      wrapper = mount(
+        <Form onSubmit={submit}>
+          <SubmitButton data-prop="value">Submit</SubmitButton>
+        </Form>
+      );
+    });
+
+    it('submits form onClick', async () => {
+      wrapper.find('button').simulate('click');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(submit).toHaveBeenCalled();
+    });
   });
 
   describe('on click', () => {
@@ -82,7 +101,7 @@ describe('Button Tests', () => {
         expect(mock).toHaveBeenCalled();
       });
       it('fires form submission onClick', async () => {
-        await expect(buttonInstance.onClick(null)).resolves.not.toBeUndefined();
+        await expect(buttonInstance.onClick(null)).resolves.toBeUndefined();
 
         expect(submitSpy).toHaveBeenCalledWith({ btn: 6 }, buttonForm);
       });

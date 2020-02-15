@@ -2,15 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GroupableElement from './GroupableElement';
 import { NoOperation } from '../../utils/CommonFunctions';
+import { PasswordInput } from '../../../../CardsAgainstHumanity/src/components/formelements/inputs/TextInput';
 
 export default class Button extends GroupableElement {
   static propTypes = {
     ...GroupableElement.propTypes,
+    submittable: PropTypes.bool,
     onClick: PropTypes.func
   };
 
   static defaultProps = {
     ...GroupableElement.defaultProps,
+    submittable: false,
     onClick: NoOperation
   };
 
@@ -31,24 +34,35 @@ export default class Button extends GroupableElement {
   }
 
   _isSubmittable() {
-    return this.submittable && this.rootForm;
+    return this.submittable && this.rootForm && !this.rootForm.useNativeForm;
   }
 
-  onClick(e) {
-    const cancel = this.props.onClick(e) === false;
-    if (cancel) return Promise.resolve();
-    if (this._isSubmittable()) {
-      return this.rootForm.submit();
+  async onClick(e) {
+    const cancel = (await this.props.onClick(e)) === false;
+    if (cancel) return;
+    try {
+      if (this._isSubmittable()) {
+        await this.rootForm.submit();
+      }
+    } catch (err) {
+      // do nothing on submission fail. form will handle it
     }
-    return Promise.resolve();
   }
 
   render() {
-    const { className, children } = this.props;
+    const { className, children, type, ...otherProps } = this.props;
+    const buttonType = this.submittable ? 'submit' : 'button';
     return (
-      <button onClick={(e) => this.onClick(e)} className={`${this.defaultClassName} ${className}`}>
+      <button
+        type={buttonType}
+        {...otherProps}
+        onClick={(e) => this.onClick(e)}
+        className={`${this.defaultClassName} ${className}`}
+      >
         {children}
       </button>
     );
   }
 }
+
+export const SubmitButton = (props) => <Button {...props} submittable />;

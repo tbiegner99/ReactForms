@@ -3,33 +3,30 @@
   to be an abstract class
 */
 export default class Rule {
-    // a rule may have a single argument. It may be an array, but its up to the rule to enforce.
-    // They will be passed in on rule creation
-    // eslint-disable-next-line no-useless-constructor, no-unused-vars, no-empty-function
-    constructor(args) {}
+  // a rule may have a single argument. It may be an array, but its up to the rule to enforce.
+  // They will be passed in on rule creation
+  // eslint-disable-next-line no-useless-constructor, no-unused-vars, no-empty-function
+  constructor(args) {}
 
-    get defaultPriority() {
-        return 1;
-    }
+  get defaultPriority() {
+    return 1;
+  }
 
-    // To avoid errors this must be overriden and must be static
-    static get name() {
-        return null;
-    }
+  // Recommended to be overriden. It should be static
+  static get ruleName() {
+    return this.name;
+  }
 
-    // returns static definition
-    get name() {
-        return this.constructor.name;
-    }
+  get ruleName() {
+    return this.constructor.ruleName;
+  }
 
-    getDefaultMessage(value, ruleInstance = this) {
-        return `Rule violated for value ${value} - ${ruleInstance.name}`;
-    }
+  getDefaultMessage(value, ruleInstance = this) {
+    return `Rule violated for value ${value} - ${ruleInstance.ruleName}`;
+  }
 
-    // eslint-disable-next-line no-unused-vars
-    validate(value) {
-        return Promise.reject(
-            new Error(`Error in rule: ${this.name}. No rule definition supplied.`)
-        );
-    }
+  // eslint-disable-next-line no-unused-vars
+  validate(value) {
+    return Promise.reject(new Error(`Error in rule: ${this.name}. No rule definition supplied.`));
+  }
 }

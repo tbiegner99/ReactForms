@@ -34,6 +34,10 @@ export default class TextInput extends FormElement {
   }
 
   render() {
+    const { value, defaultValue, name, onChange, onBlur, ...otherProps } = this.props;
+    const style = {
+      // width: '100%'
+    };
     return (
       <div>
         <input
@@ -43,8 +47,10 @@ export default class TextInput extends FormElement {
           onChange={(e) => this.onInputChange(e.target.value)}
           onBlur={() => this.onInputBlur()}
           name={this.fullName}
+          style={style}
+          {...otherProps}
         />
-        {this.showErrors && <span>{this.errorMessage}</span>}
+        {this.renderErrorLabel()}
       </div>
     );
   }

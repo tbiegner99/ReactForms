@@ -1,0 +1,49 @@
+.__selectBox__ {
+  position: relative;
+}
+.__selectBox__ > .__selectedOptionBox__ {
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.__selectBox__ .options {
+  border: 1px solid black;
+  background: white;
+  position: absolute;
+  top:100%;
+  width:100%
+
+} 
+.options {
+  height:auto;
+  max-height:100px;
+  overflow-y: scroll;
+  transition: all .25s ease-in-out;
+}
+.options.closed {
+  max-height:0;
+  overflow: hidden;
+  border-width: 0;
+}
+.selectOption {
+  cursor: pointer;
+  padding:10px;
+}
+.selectOption:hover {
+  background:red;
+  
+}
+
+.arrowIcon {
+  transform: rotate(0deg);
+  transition: all .25s ease-in-out;
+}
+.arrowIcon.up {
+  transform: rotate(180deg);
+  transform-origin: center;
+}
+

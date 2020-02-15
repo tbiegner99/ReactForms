@@ -9,108 +9,160 @@ class MockFormElement extends FormElement {
   }
 }
 export default () => {
-  describe('validation state notification', () => {
-    let form;
-    let element;
-    let elInstance;
-    let stateChangeSpy;
-    beforeEach(async () => {
-      stateChangeSpy = jest.fn();
-      form = mount(<Form onValidationStateChange={stateChangeSpy} />).instance();
-      element = mount(<MockFormElement name="el1" required data-rule-number value="" />, {
-        context: { parentForm: form }
-      });
-      elInstance = element.instance();
-      try {
-        await form.validate();
-      } catch (e) {
-        // expect error
-      }
-      stateChangeSpy.mockReset();
-    });
-
-    it('modifies existing form state appropriately', async () => {
-      expect(form.validationState).toEqual({
-        valid: false,
-        uniqueId: null,
-        name: undefined,
-        numberOfInvalidElements: 1,
-        elementResults: {
-          0: {
-            name: 'el1',
-            valid: false,
-            numberOfInvalidElements: 1,
-            numberOfRulesViolated: 1,
-            message: 'Rule violated for value  - RequiredRule'
-          }
+  describe('validation', () => {
+    describe('validation state notification', () => {
+      let form;
+      let element;
+      let elInstance;
+      let stateChangeSpy;
+      beforeEach(async () => {
+        stateChangeSpy = jest.fn();
+        form = mount(<Form onValidationStateChange={stateChangeSpy} />).instance();
+        element = mount(<MockFormElement name="el1" required data-rule-number value="" />, {
+          context: { parentForm: form }
+        });
+        elInstance = element.instance();
+        try {
+          await form.validate();
+        } catch (e) {
+          // expect error
         }
+        stateChangeSpy.mockReset();
       });
-      element.setProps({ value: 5 });
-      try {
+
+      it('modifies existing form state appropriately', async () => {
+        expect(form.validationState).toEqual({
+          valid: false,
+          isForm: true,
+          uniqueId: null,
+          name: undefined,
+          numberOfInvalidElements: 1,
+          elementResults: {
+            0: {
+              name: 'el1',
+              valid: false,
+              isForm: false,
+              ruleName: 'required',
+              uniqueId: 0,
+              numberOfInvalidElements: 1,
+              numberOfRulesViolated: 1,
+              message: 'Rule violated for value  - required'
+            }
+          }
+        });
+        element.setProps({ value: 5 });
+
         await elInstance.validate();
-      } catch (e) {
-        // do nothing
-      }
-      expect(form.validationState).toEqual({
-        valid: true,
-        uniqueId: null,
-        name: undefined,
-        numberOfInvalidElements: 0,
-        elementResults: {
-          0: {
-            name: 'el1',
+
+        expect(form.validationState).toEqual({
+          valid: true,
+          isForm: true,
+          uniqueId: null,
+          name: undefined,
+          numberOfInvalidElements: 0,
+          elementResults: {
+            0: {
+              name: 'el1',
+              valid: true,
+              numberOfInvalidElements: 0,
+              numberOfRulesViolated: 0,
+              ruleName: null,
+              uniqueId: 0,
+              isForm: false,
+              message: null
+            }
+          }
+        });
+        expect(stateChangeSpy).toHaveBeenCalled();
+      });
+      it('fires an onValidationStateChange event when element changing submittability triggers a validation status change', async () => {
+        element.setProps({ value: 'A' });
+        try {
+          await elInstance.validate();
+        } catch (e) {
+          // expected case
+        }
+        expect(stateChangeSpy).not.toHaveBeenCalled();
+        // form should become valid when invalid element becomes not submittable
+        element.setProps({ value: 'A', name: null });
+        try {
+          await elInstance.validate();
+        } catch (e) {
+          // expected case
+        }
+
+        expect(form.validationState).toEqual({
+          valid: true,
+          uniqueId: null,
+          name: undefined,
+          numberOfInvalidElements: 0,
+          isForm: true,
+          elementResults: {}
+        });
+        expect(stateChangeSpy).toHaveBeenCalled();
+      });
+      it('fires an onValidationStateChange event only when valid state changes', async () => {
+        element.setProps({ value: 'A' });
+        try {
+          await elInstance.validate();
+        } catch (e) {
+          // expect error
+        }
+        expect(stateChangeSpy).not.toHaveBeenCalled();
+        element.setProps({ value: 5 });
+        await elInstance.validate();
+
+        expect(stateChangeSpy).toHaveBeenCalled();
+      });
+    });
+    describe('form validation', () => {
+      describe('with all valid elements', () => {
+        let formJsx;
+        let form;
+        beforeEach(() => {
+          formJsx = mount(
+            <Form>
+              <MockFormElement required value="A" name="el1" />
+              <MockFormElement value="" required />
+              <MockFormElement required data-rule-number value="5" name="el2" />
+            </Form>
+          );
+          form = formJsx.instance();
+        });
+        it('resolves with validation results object', async () => {
+          await expect(form.validate()).resolves.toEqual({
             valid: true,
+            isForm: true,
             numberOfInvalidElements: 0,
-            numberOfRulesViolated: 0,
-            message: null
-          }
-        }
+            name: undefined,
+            uniqueId: null,
+            elementResults: {
+              0: {
+                valid: true,
+                numberOfInvalidElements: 0,
+                message: null,
+                isForm: false,
+                numberOfRulesViolated: 0,
+                ruleName: null,
+                uniqueId: 0,
+                name: 'el1'
+              },
+              2: {
+                valid: true,
+                numberOfInvalidElements: 0,
+                message: null,
+                isForm: false,
+                numberOfRulesViolated: 0,
+                ruleName: null,
+                uniqueId: 2,
+                name: 'el2'
+              }
+            }
+          });
+        });
       });
-      expect(stateChangeSpy).toHaveBeenCalled();
     });
-    it('fires an onValidationStateChange event when element changing submittability triggers a validation status change', async () => {
-      element.setProps({ value: 'A' });
-      try {
-        await elInstance.validate();
-      } catch (e) {
-        // expected case
-      }
-      expect(stateChangeSpy).not.toHaveBeenCalled();
-      element.setProps({ value: 'A', name: null });
-      try {
-        await elInstance.validate();
-      } catch (e) {
-        // expected case
-      }
-      expect(form.validationState).toEqual({
-        valid: true,
-        uniqueId: null,
-        name: undefined,
-        numberOfInvalidElements: 0,
-        elementResults: {}
-      });
-      expect(stateChangeSpy).toHaveBeenCalled();
-    });
-    it('fires an onValidationStateChange event only when valid state changes', async () => {
-      element.setProps({ value: 'A' });
-      try {
-        await elInstance.validate();
-      } catch (e) {
-        // expect error
-      }
-      expect(stateChangeSpy).not.toHaveBeenCalled();
-      element.setProps({ value: 5 });
-      try {
-        await elInstance.validate();
-      } catch (e) {
-        // expect error
-      }
-
-      expect(stateChangeSpy).toHaveBeenCalled();
-    });
-  });
-  describe('form validation', () => {
-    describe('with all valid elements', () => {
+    describe('with some invalid elements', () => {
       let formJsx;
       let form;
       beforeEach(() => {
@@ -118,149 +170,129 @@ export default () => {
           <Form>
             <MockFormElement required value="A" name="el1" />
             <MockFormElement value="" required />
-            <MockFormElement required data-rule-number value="5" name="el2" />
+            <MockFormElement required data-rule-number value="A" name="el2" />
           </Form>
         );
         form = formJsx.instance();
       });
-      it('resolves with validation results object', async () => {
-        await expect(form.validate()).resolves.toEqual({
-          valid: true,
-          numberOfInvalidElements: 0,
+      it('rejects with validation results object', async () => {
+        await expect(form.validate()).rejects.toEqual({
+          valid: false,
+          numberOfInvalidElements: 1,
           name: undefined,
           uniqueId: null,
+          isForm: true,
           elementResults: {
             0: {
               valid: true,
               numberOfInvalidElements: 0,
               message: null,
               numberOfRulesViolated: 0,
+              ruleName: null,
+              uniqueId: 0,
+              isForm: false,
               name: 'el1'
             },
             2: {
-              valid: true,
-              numberOfInvalidElements: 0,
-              message: null,
-              numberOfRulesViolated: 0,
+              valid: false,
+              numberOfInvalidElements: 1,
+              message: 'Rule violated for value A - number',
+              numberOfRulesViolated: 1,
+              ruleName: 'number',
+              uniqueId: 2,
+              isForm: false,
               name: 'el2'
             }
           }
         });
       });
     });
-  });
-  describe('with some invalid elements', () => {
-    let formJsx;
-    let form;
-    beforeEach(() => {
-      formJsx = mount(
-        <Form>
-          <MockFormElement required value="A" name="el1" />
-          <MockFormElement value="" required />
-          <MockFormElement required data-rule-number value="A" name="el2" />
-        </Form>
-      );
-      form = formJsx.instance();
-    });
-    it('rejects with validation results object', async () => {
-      await expect(form.validate()).rejects.toEqual({
-        valid: false,
-        numberOfInvalidElements: 1,
-        name: undefined,
-        uniqueId: null,
-        elementResults: {
-          0: {
-            valid: true,
-            numberOfInvalidElements: 0,
-            message: null,
-            numberOfRulesViolated: 0,
-            name: 'el1'
-          },
-          2: {
-            valid: false,
-            numberOfInvalidElements: 1,
-            message: 'Rule violated for value A - NumberRule',
-            numberOfRulesViolated: 1,
-            name: 'el2'
-          }
-        }
-      });
-    });
-  });
-  describe('with a nested form', () => {
-    describe('that has ivalid result', () => {
-      let formJsx;
-      let form;
-      beforeEach(() => {
-        formJsx = mount(
-          <Form>
-            <Form name="sf1">
-              <MockFormElement required value="" name="el1" />
-              <MockFormElement required value="" name="el2" />
+    describe('with a nested form', () => {
+      describe('that has invalid result', () => {
+        let formJsx;
+        let form;
+        beforeEach(() => {
+          formJsx = mount(
+            <Form>
+              <Form name="sf1">
+                <MockFormElement required value="" name="el1" />
+                <MockFormElement required value="" name="el2" />
+              </Form>
+              <Form>
+                <MockFormElement required value="A" name="el1" />
+              </Form>
+              <MockFormElement required data-rule-number value="5" name="el2" />
             </Form>
+          );
+          form = formJsx.instance();
+        });
+        it('generates correct validationResult', async () => {
+          await expect(form.validate()).rejects.toEqual({
+            valid: false,
+            isForm: true,
+            numberOfInvalidElements: 2,
+            name: undefined,
+            uniqueId: null,
+            elementResults: {
+              0: {
+                valid: false,
+                numberOfInvalidElements: 2,
+                isForm: true,
+                name: 'sf1',
+                uniqueId: 0,
+                elementResults: {
+                  0: {
+                    valid: false,
+                    numberOfInvalidElements: 1,
+                    message: 'Rule violated for value  - required',
+                    numberOfRulesViolated: 1,
+                    name: 'sf1.el1',
+                    ruleName: 'required',
+                    uniqueId: 0,
+                    isForm: false
+                  },
+                  1: {
+                    valid: false,
+                    numberOfInvalidElements: 1,
+                    message: 'Rule violated for value  - required',
+                    numberOfRulesViolated: 1,
+                    name: 'sf1.el2',
+                    uniqueId: 1,
+                    ruleName: 'required',
+                    isForm: false
+                  }
+                }
+              },
+              2: {
+                valid: true,
+                numberOfInvalidElements: 0,
+                message: null,
+                isForm: false,
+                ruleName: null,
+                uniqueId: 2,
+                numberOfRulesViolated: 0,
+                name: 'el2'
+              }
+            }
+          });
+        });
+      });
+      describe('full validate', () => {
+        let form;
+        let formJsx;
+        beforeEach(() => {
+          formJsx = mount(
             <Form>
               <MockFormElement required value="A" name="el1" />
             </Form>
-            <MockFormElement required data-rule-number value="5" name="el2" />
-          </Form>
-        );
-        form = formJsx.instance();
-      });
-      it('generates correct validationResult', async () => {
-        await expect(form.validate()).rejects.toEqual({
-          valid: false,
-          numberOfInvalidElements: 2,
-          name: undefined,
-          uniqueId: null,
-          elementResults: {
-            0: {
-              valid: false,
-              numberOfInvalidElements: 2,
-              name: 'sf1',
-              uniqueId: 0,
-              elementResults: {
-                0: {
-                  valid: false,
-                  numberOfInvalidElements: 1,
-                  message: 'Rule violated for value  - RequiredRule',
-                  numberOfRulesViolated: 1,
-                  name: 'sf1.el1'
-                },
-                1: {
-                  valid: false,
-                  numberOfInvalidElements: 1,
-                  message: 'Rule violated for value  - RequiredRule',
-                  numberOfRulesViolated: 1,
-                  name: 'sf1.el2'
-                }
-              }
-            },
-            2: {
-              valid: true,
-              numberOfInvalidElements: 0,
-              message: null,
-              numberOfRulesViolated: 0,
-              name: 'el2'
-            }
-          }
+          );
+          form = formJsx.instance();
         });
-      });
-    });
-    describe('full validate', () => {
-      let form;
-      let formJsx;
-      beforeEach(() => {
-        formJsx = mount(
-          <Form>
-            <MockFormElement required value="A" name="el1" />
-          </Form>
-        );
-        form = formJsx.instance();
-      });
-      it('calls validate with showErrors option', async () => {
-        const validateSpy = jest.spyOn(form, 'validate');
-        await form.fullValidate();
-        expect(validateSpy).toHaveBeenCalledWith({ showErrors: true });
+        it('calls validate with showErrors option', async () => {
+          const validateSpy = jest.spyOn(form, 'validate');
+          await form.fullValidate();
+          expect(validateSpy).toHaveBeenCalledWith({ showErrors: true });
+        });
       });
     });
   });

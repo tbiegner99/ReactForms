@@ -16,6 +16,7 @@ export default () => {
       await expect(ruleManager.validate('value', [])).resolves.toEqual({
         valid: true,
         message: null,
+        ruleName: null,
         numberOfRulesViolated: 0,
         numberOfInvalidElements: 0
       });
@@ -25,6 +26,7 @@ export default () => {
       await expect(ruleManager.validate('value', {})).resolves.toEqual({
         valid: true,
         message: null,
+        ruleName: null,
         numberOfRulesViolated: 0,
         numberOfInvalidElements: 0
       });

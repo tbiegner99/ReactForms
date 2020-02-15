@@ -3,3 +3,4 @@ import './ButtonStory';
 import './CheckboxStory';
 import './RadioButtonStory';
 import './CheckboxGroup';
+import './SelectStory';

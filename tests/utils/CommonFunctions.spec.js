@@ -21,11 +21,19 @@ describe('common functions', () => {
   it('returns false for false function ', () => {
     expect(FalseFunction()).toBe(false);
   });
-  it('returns rejected promise for reject function ', () => {
-    expect(RejectFunction()).toEqual(Promise.reject());
+  it('returns rejected promise for reject function ', async () => {
+    const message = 'some rejection message';
+    try {
+      await RejectFunction(message);
+    } catch (err) {
+      expect(err.message).toEqual(message);
+      return;
+    }
+    throw new Error('expected an error');
   });
 
-  it('returns resolved promise for resolve function ', () => {
-    expect(ResolveFunction()).toEqual(Promise.resolve());
+  it('returns resolved promise for resolve function ', async () => {
+    const value = 'some-value';
+    expect(await ResolveFunction(value)).toEqual(value);
   });
 });

@@ -2,16 +2,20 @@ import Rule from '../Rule';
 import InvalidValueError from '../errors/InvalidValueError';
 
 export default class RequiredRule extends Rule {
-    static get ruleName() {
-        return 'required';
-    }
+  static get ruleName() {
+    return 'required';
+  }
 
-    // this should be first in rule list be default
-    get defaultPriority() {
-        return 0;
-    }
+  // this should be first in rule list be default
+  get defaultPriority() {
+    return 0;
+  }
 
-    validate(value) {
-        return !value ? Promise.reject(new InvalidValueError()) : Promise.resolve();
-    }
+  getDefaultMessage() {
+    return 'Field is required.';
+  }
+
+  async validate(value) {
+    if (!value) throw new InvalidValueError();
+  }
 }

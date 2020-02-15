@@ -318,19 +318,28 @@ describe('Form Element Component', () => {
       it('returns resolved promise when validation succeeds', async () => {
         const elJsx = mount(<ExampleFormElement required value={5} />);
         const el = elJsx.instance();
-        await expect(el.validate({ showErrors: true })).resolves.toEqual({
+        const result = await el.validate({ showErrors: true });
+        expect(result).toEqual({
           valid: true,
           message: null,
+          name: undefined,
+          uniqueId: null,
+          isForm: false,
+          ruleName: null,
           numberOfInvalidElements: 0,
           numberOfRulesViolated: 0
         });
       });
       it('returns rejected promise when validation fails', async () => {
-        const elJsx = mount(<ExampleFormElement required value={null} />);
+        const elJsx = mount(<ExampleFormElement name="element" required value={null} />);
         const el = elJsx.instance();
         await expect(el.validate({ showErrors: true })).rejects.toEqual({
           valid: false,
-          message: 'Rule violated for value null - RequiredRule',
+          isForm: false,
+          uniqueId: null,
+          name: 'element',
+          ruleName: 'required',
+          message: 'Rule violated for value null - required',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         });
@@ -339,7 +348,12 @@ describe('Form Element Component', () => {
         const stateChange = jest.fn();
         const parentForm = mount(<Form />).instance();
         const elJsx = mount(
-          <ExampleFormElement onValidationStateChange={stateChange} required value={null} />,
+          <ExampleFormElement
+            name="element"
+            onValidationStateChange={stateChange}
+            required
+            value={null}
+          />,
           {
             context: {
               parentForm
@@ -349,7 +363,11 @@ describe('Form Element Component', () => {
         const el = elJsx.instance();
         let result = {
           valid: false,
-          message: 'Rule violated for value null - RequiredRule',
+          isForm: false,
+          name: 'element',
+          uniqueId: 0,
+          ruleName: 'required',
+          message: 'Rule violated for value null - required',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         };
@@ -360,14 +378,20 @@ describe('Form Element Component', () => {
         result = {
           valid: true,
           message: null,
+          name: 'element',
+          isForm: false,
+          uniqueId: 0,
+          ruleName: null,
           numberOfInvalidElements: 0,
           numberOfRulesViolated: 0
         };
-        await expect(el.validate({ showErrors: true })).resolves.toEqual(result);
+        let lastValidationResult = await el.validate({ showErrors: true });
+        expect(lastValidationResult).toEqual(result);
         expect(stateChange).toHaveBeenCalledWith(true, el, result);
         stateChange.mockReset();
         elJsx.setProps({ value: 2 });
-        await expect(el.validate({ showErrors: true })).resolves.toEqual(result);
+        lastValidationResult = await el.validate({ showErrors: true });
+        expect(lastValidationResult).toEqual(result);
         expect(stateChange).not.toHaveBeenCalled();
       });
       it('notifies the parent form of its validation state', async () => {
@@ -381,7 +405,11 @@ describe('Form Element Component', () => {
         const formSpy = jest.spyOn(parentForm, 'notifyElementValidationState');
         const result = {
           valid: false,
-          message: 'Rule violated for value null - RequiredRule',
+          isForm: false,
+          name: undefined,
+          uniqueId: 0,
+          ruleName: 'required',
+          message: 'Rule violated for value null - required',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         };
@@ -393,7 +421,10 @@ describe('Form Element Component', () => {
         const el = elJsx.instance();
         await expect(el.fullValidate()).rejects.toEqual({
           valid: false,
-          message: 'Rule violated for value null - RequiredRule',
+          isForm: false,
+          uniqueId: null,
+          ruleName: 'required',
+          message: 'Rule violated for value null - required',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         });

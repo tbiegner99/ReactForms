@@ -3,7 +3,12 @@ import RequiredRule from '../../../src/validation/rules/RequiredRule';
 import NumberRule from '../../../src/validation/rules/NumberRule';
 import Rule from '../../../src/validation/Rule';
 
+const EXPECTED_AN_ERROR = new Error('Expected an error');
 class SlowRejectRule extends Rule {
+  static get name() {
+    return 'slow-reject';
+  }
+
   validateValue() {
     return new Promise((resolve, reject) => {
       setTimeout(2000, reject);
@@ -13,15 +18,16 @@ class SlowRejectRule extends Rule {
 describe('Validator', () => {
   describe('validates a value given a rule configuration', () => {
     it('returns valid response for empty configuration', async () => {
-      expect(Validator.validate()).resolves.toEqual({
+      expect(await Validator.validate()).toEqual({
         numberOfInvalidElements: 0,
         valid: true,
         message: null,
+        ruleName: null,
         numberOfRulesViolated: 0
       });
     });
     describe('for simple single priority rule set', () => {
-      it('returns a resolved promise for valid value', () => {
+      it('returns a resolved promise for valid value', async () => {
         const ruleConfig = [
           {
             rule: new RequiredRule(),
@@ -29,15 +35,17 @@ describe('Validator', () => {
             priority: 0
           }
         ];
-        return expect(Validator.validate('a', ruleConfig)).resolves.toEqual({
+        const result = await Validator.validate('a', ruleConfig);
+        expect(result).toEqual({
           numberOfInvalidElements: 0,
           valid: true,
           message: null,
+          ruleName: null,
           numberOfRulesViolated: 0
         });
       });
 
-      it('returns a resolved promise for invalid value', () => {
+      it('returns a resolved promise for invalid value', async () => {
         const ruleConfig = [
           {
             rule: new RequiredRule(),
@@ -45,15 +53,22 @@ describe('Validator', () => {
             priority: 0
           }
         ];
-        return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
-          numberOfInvalidElements: 1,
-          valid: false,
-          message: 'This is required',
-          numberOfRulesViolated: 1
-        });
+        try {
+          await Validator.validate('', ruleConfig);
+        } catch (err) {
+          expect(err).toEqual({
+            numberOfInvalidElements: 1,
+            valid: false,
+            message: 'This is required',
+            ruleName: 'required',
+            numberOfRulesViolated: 1
+          });
+          return;
+        }
+        throw EXPECTED_AN_ERROR;
       });
 
-      it('when message is a function it invokes it to get message value', () => {
+      it('when message is a function it invokes it to get message value', async () => {
         const ruleConfig = [
           {
             rule: new NumberRule(),
@@ -61,12 +76,19 @@ describe('Validator', () => {
             priority: 0
           }
         ];
-        return expect(Validator.validate('ABC', ruleConfig)).rejects.toEqual({
-          numberOfInvalidElements: 1,
-          valid: false,
-          message: 'ABC is not a number',
-          numberOfRulesViolated: 1
-        });
+        try {
+          await Validator.validate('ABC', ruleConfig);
+        } catch (err) {
+          expect(err).toEqual({
+            numberOfInvalidElements: 1,
+            valid: false,
+            message: 'ABC is not a number',
+            ruleName: 'number',
+            numberOfRulesViolated: 1
+          });
+          return;
+        }
+        throw EXPECTED_AN_ERROR;
       });
 
       it('validates all rules in the rule set even if the first fails', () => {
@@ -86,6 +108,7 @@ describe('Validator', () => {
           numberOfInvalidElements: 1,
           valid: false,
           message: 'This is required',
+          ruleName: 'required',
           numberOfRulesViolated: 2
         });
       });
@@ -100,12 +123,14 @@ describe('Validator', () => {
           {
             rule: new SlowRejectRule(),
             message: 'This is a reject rule',
+            name: 'custom-name',
             priority: 0
           }
         ];
         return expect(Validator.validate('a', ruleConfig)).rejects.toEqual({
           numberOfInvalidElements: 1,
           valid: false,
+          ruleName: 'custom-name',
           message: 'This is a reject rule',
           numberOfRulesViolated: 1
         });
@@ -127,6 +152,7 @@ describe('Validator', () => {
         return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
           numberOfInvalidElements: 1,
           valid: false,
+          ruleName: 'slow-reject',
           message: 'This is a reject rule',
           numberOfRulesViolated: 2
         });
@@ -159,6 +185,7 @@ describe('Validator', () => {
           numberOfInvalidElements: 0,
           valid: true,
           message: null,
+          ruleName: null,
           numberOfRulesViolated: 0
         });
       });
@@ -167,7 +194,8 @@ describe('Validator', () => {
           {
             rule: new RequiredRule(),
             message: 'This is required',
-            priority: 0
+            priority: 0,
+            name: 'CustomName'
           },
           {
             rule: new SlowRejectRule(),
@@ -179,7 +207,8 @@ describe('Validator', () => {
           numberOfInvalidElements: 1,
           valid: false,
           message: 'This is required',
-          numberOfRulesViolated: 1
+          numberOfRulesViolated: 1,
+          ruleName: 'CustomName'
         });
         expect(slowRule.validate).not.toBeCalled();
       });

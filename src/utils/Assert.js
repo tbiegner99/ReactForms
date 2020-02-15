@@ -1,4 +1,13 @@
+const objectIsUndefined = (obj) => typeof obj === 'undefined';
+
 export default class Assert {
+  static toMatchRegex(regex, value, msg) {
+    Assert.toBeType(value, 'string');
+    Assert.toBeInstanceOf(regex, RegExp);
+    const defaultMessage = `Expected '${value}' to match regular expression`;
+    Assert.that(regex.test(value), msg || defaultMessage);
+  }
+
   static toBeOneOfType(obj, typeArr, msg) {
     for (let i = 0; i < typeArr.length; i++) {
       // eslint-disable-next-line valid-typeof
@@ -8,16 +17,14 @@ export default class Assert {
   }
 
   static toBeType(obj, type, msg) {
+    const message = msg || `Expected object of type ${typeof obj} to be of type ${type}`;
     // eslint-disable-next-line valid-typeof
-    if (typeof obj !== type) {
-      throw new Error(msg || `Expected object of type ${typeof obj} to be of type ${type}`);
-    }
+    Assert.that(typeof obj === type, message);
   }
 
   static toBeInstanceOf(obj, clazz, msg) {
-    if (!(obj instanceof clazz)) {
-      throw new Error(msg || `Expected object to be instance of ${clazz.name}`);
-    }
+    const message = msg || `Expected object to be instance of ${clazz.name}`;
+    Assert.that(obj instanceof clazz, message);
   }
 
   static toBeObject(obj, msg) {
@@ -38,34 +45,35 @@ export default class Assert {
 
   static toBeInteger(obj, msg) {
     const parsed = parseInt(obj, 10);
-    if (Number.isNaN(parsed)) {
-      throw new Error(msg || `Expected ${obj} to be an integer`);
-    }
+    const message = msg || `Expected ${obj} to be an integer`;
+    Assert.thatNot(Number.isNaN(parsed), message);
 
     return parsed;
   }
 
   static toNotBeNullOrUndefined(obj, msg) {
-    if (obj === null || typeof obj === 'undefined') {
-      throw new Error(msg || 'Object must be defined');
-    }
+    const objectIsNull = obj === null;
+    const message = msg || 'Object must be defined';
+    Assert.thatNot(objectIsNull || objectIsUndefined(obj), message);
 
     return obj;
   }
 
   static toBeTruthy(obj, msg) {
-    if (!obj) {
-      throw new Error(msg || `Expected ${obj} to be truthy`);
-    }
+    const message = msg || `Expected ${obj} to be truthy`;
+    Assert.that(Boolean(obj), message);
 
     return obj;
   }
 
-  static toBeArray(obj, msg) {
-    if (!Array.isArray(obj)) {
-      throw new Error(msg || `Expected ${obj} to be an array`);
-    }
+  static toBeDefined(obj, msg) {
+    const message = msg || 'Expected item to be defined';
+    Assert.thatNot(objectIsUndefined(obj), message);
+  }
 
+  static toBeArray(obj, msg) {
+    const message = msg || `Expected ${obj} to be an array`;
+    Assert.that(Array.isArray(obj), message);
     return obj;
   }
 
