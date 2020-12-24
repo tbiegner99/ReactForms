@@ -4,15 +4,15 @@ import Assert from '../../utils/Assert';
 // NOTE: to avoid fast failure and ensure all rules in a rule set
 // get executed, always resolve rule evaluations,
 // we determine rule set failure when merging results
-const wrapRuleEvaluationInPromiseToEnforceAllRuleExecution = async (config, value) => {
+const wrapRuleEvaluationInPromiseToEnforceAllRuleExecution = async (config, value, formValues) => {
   const ruleName = config.name || config.rule.ruleName;
   try {
-    await config.rule.validate(value);
+    await config.rule.validate(value, formValues);
     return { ruleName, isValid: true };
   } catch (err) {
     let { message } = config;
     if (typeof message === 'function') {
-      message = message(value, config.rule);
+      message = message(value, config.rule, err);
     }
     const errObject = {
       ruleName,
@@ -35,13 +35,13 @@ const combineErrors = (errs) => {
   };
 };
 
-const ruleSetToPromiseSet = (ruleSet, value) =>
+const ruleSetToPromiseSet = (ruleSet, value, formValues) =>
   ruleSet.map((ruleConfig) =>
-    wrapRuleEvaluationInPromiseToEnforceAllRuleExecution(ruleConfig, value)
+    wrapRuleEvaluationInPromiseToEnforceAllRuleExecution(ruleConfig, value, formValues)
   );
 
-const evaluateRuleSet = async (value, ruleSet) => {
-  const results = await Promise.all(ruleSetToPromiseSet(ruleSet, value));
+const evaluateRuleSet = async (value, formValues, ruleSet) => {
+  const results = await Promise.all(ruleSetToPromiseSet(ruleSet, value, formValues));
   const errObject = combineErrors(results);
   if (!errObject.valid) {
     throw errObject;
@@ -63,7 +63,7 @@ const executeRuleSets = async (ruleSetsPromiseArray) => {
   return successObjects[0];
 };
 
-const validate = (value, config = []) => {
+const validate = (value, config = [], formValues = {}) => {
   Assert.toBeArray(config, 'Expected configuration to be an array');
   // a config will be an array of rule configurations
   const rulesByPriority = ArrayUtilities.partitionBy(config, (item) => item.priority);
@@ -71,7 +71,9 @@ const validate = (value, config = []) => {
   const rulesSetsSortedByPriority = Object.keys(rulesByPriority)
     .sort()
     .map((key) => rulesByPriority[key]);
-  const rulesSetsAsPromiseArray = rulesSetsSortedByPriority.map(evaluateRuleSet.bind(null, value));
+  const rulesSetsAsPromiseArray = rulesSetsSortedByPriority.map(
+    evaluateRuleSet.bind(null, value, formValues)
+  );
   // a success will only have one object in the array because of result merging
   return executeRuleSets(rulesSetsAsPromiseArray);
 };

@@ -1,8 +1,8 @@
 import React from 'react';
+import combineClasses from "classnames"
 import PropTypes from 'prop-types';
 import GroupableElement from './GroupableElement';
 import { NoOperation } from '../../utils/CommonFunctions';
-import { PasswordInput } from '../../../../CardsAgainstHumanity/src/components/formelements/inputs/TextInput';
 
 export default class Button extends GroupableElement {
   static propTypes = {
@@ -30,7 +30,7 @@ export default class Button extends GroupableElement {
   }
 
   get submittable() {
-    return !!this.props.submittable;
+    return this.props.type === 'submit' || !!this.props.submittable;
   }
 
   _isSubmittable() {
@@ -40,11 +40,16 @@ export default class Button extends GroupableElement {
   async onClick(e) {
     const cancel = (await this.props.onClick(e)) === false;
     if (cancel) return;
+   
     try {
-      if (this._isSubmittable()) {
+      if (this.context.inputGroup) {
+        await this.select();
+      }
+      if (this.rootForm && this._isSubmittable()) {
         await this.rootForm.submit();
       }
     } catch (err) {
+      console.error(err)
       // do nothing on submission fail. form will handle it
     }
   }
@@ -52,12 +57,13 @@ export default class Button extends GroupableElement {
   render() {
     const { className, children, type, ...otherProps } = this.props;
     const buttonType = this.submittable ? 'submit' : 'button';
+    const selected = this.selected;
     return (
       <button
         type={buttonType}
         {...otherProps}
         onClick={(e) => this.onClick(e)}
-        className={`${this.defaultClassName} ${className}`}
+        className={combineClasses(this.defaultClassName, className, {selected})}
       >
         {children}
       </button>

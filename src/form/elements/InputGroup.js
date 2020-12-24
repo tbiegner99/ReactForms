@@ -83,6 +83,9 @@ export default class InputGroup extends GroupableElement {
     }
     const elId = this[_uniqueId]++;
     this[_elements][elId] = el;
+    if (el.selected) {
+      this.selectElement(elId);
+    }
 
     return elId;
   }
@@ -103,6 +106,7 @@ export default class InputGroup extends GroupableElement {
   }
 
   render() {
-    return <div>{this.props.children}</div>;
+    const { children, name, ...otherProps } = this.props;
+    return <div {...otherProps}>{children}</div>;
   }
 }

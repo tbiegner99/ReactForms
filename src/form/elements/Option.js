@@ -1,8 +1,9 @@
 import React from 'react';
+import Radium from 'radium';
 import PropTypes from 'prop-types';
 import { NoOperation } from '../../utils/CommonFunctions';
 
-export default class Option extends React.Component {
+class Option extends React.Component {
   static defaultProps = {
     text: null,
     className: '',
@@ -32,11 +33,13 @@ export default class Option extends React.Component {
   }
 
   render() {
-    const { onOptionSelect, className } = this.props;
+    const { onOptionSelect, className, children, ...otherProps } = this.props;
     return (
-      <div role="select" onClick={() => onOptionSelect(this)} className={className}>
-        {this.text}
+      <div role="select" onClick={() => onOptionSelect(this)} className={className} {...otherProps}>
+        {this.text || children}
       </div>
     );
   }
 }
+
+export default Radium(Option);

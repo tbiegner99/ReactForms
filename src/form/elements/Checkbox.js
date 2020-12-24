@@ -1,18 +1,12 @@
 import React from 'react';
+import combineClasses from 'classnames';
 import GroupableElement from './GroupableElement';
 
-import './styles/Checkbox.css';
+import styles from './styles/Checkbox.css';
 
 export default class Checkbox extends GroupableElement {
-  static defaultClassname = '__checkboxElement__';
-
   constructor(props) {
-    super({
-      ...props,
-      defaultSelected:
-        typeof props.defaultChecked !== 'undefined' ? props.defaultChecked : props.defaultSelected,
-      selected: typeof props.checked !== 'undefined' ? props.checked : props.selected
-    });
+    super(props);
   }
 
   get value() {
@@ -35,7 +29,20 @@ export default class Checkbox extends GroupableElement {
   }
 
   renderIcon() {
-    const { selected } = this.state;
+    const selected = this.checked;
+    const baseStyles = {
+      strokeDasharray: 15,
+      strokeDashoffset: 15,
+      stroke: '#666',
+      strokeWidth: 1.5,
+      transition: 'all .5s ease-in-out'
+    };
+    if (selected) {
+      Object.assign(baseStyles, {
+        strokeDashoffset: 0
+      });
+    }
+
     return (
       <svg viewBox="0 0 11 11" width="15" height="15">
         <rect
@@ -50,27 +57,36 @@ export default class Checkbox extends GroupableElement {
           width="10"
         />
         <svg x=".5" y=".5">
-          <path d="M1.5 6L4 8L8 1.5" className={`checkMark ${selected && 'checked'}`} fill="none" />
+          <path className="__checkmark__" d="M1.5 6L4 8L8 1.5" style={baseStyles} fill="none" />
         </svg>
       </svg>
     );
   }
 
   render() {
-    const { className, label, tabIndex = 0 } = this.props;
-    const { selected } = this.state;
+    const { className, style, label, children, tabIndex = 0 } = this.props;
+    const selected = this.checked;
+    const baseStyles = {
+      outline: 'none',
+      cursor: 'pointer',
+      display: 'flex'
+    };
+    const iconStyles = {
+      paddingRight: '10px',
+      paddingTop: '2px'
+    };
     return (
       <div
         onClick={() => this.onClick()}
         onKeyDown={(evt) => this.accessibilityClick(evt)}
-        className={`__checkElementRoot__ ${Checkbox.defaultClassname} ${className} ${selected &&
-          'checked'}`}
+        className={className}
+        style={Object.assign(baseStyles, style)}
         role="checkbox"
         aria-checked={selected}
         tabIndex={tabIndex}
       >
-        <div className="__checkboxIcon__">{this.renderIcon()}</div>
-        <span>{label}</span>
+        <div style={iconStyles}>{this.renderIcon()}</div>
+        <span>{label || children}</span>
       </div>
     );
   }

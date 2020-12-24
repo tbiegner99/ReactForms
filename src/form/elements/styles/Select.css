@@ -1,7 +1,7 @@
-.__selectBox__ {
+.selectBox {
   position: relative;
 }
-.__selectBox__ > .__selectedOptionBox__ {
+.selectBox > .selectedOptionBox {
   border: 1px solid black;
   display: flex;
   align-items: center;
@@ -10,7 +10,7 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.__selectBox__ .options {
+.selectBox .options {
   border: 1px solid black;
   background: white;
   position: absolute;
@@ -34,7 +34,7 @@
   padding:10px;
 }
 .selectOption:hover {
-  background:red;
+  background:#777;
   
 }
 

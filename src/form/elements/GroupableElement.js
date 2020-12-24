@@ -31,6 +31,9 @@ export default class GroupableElement extends FormElement {
   }
 
   get selected() {
+    if (typeof this.props.selected !== 'undefined') {
+      return this.props.selected;
+    }
     return this.state.selected;
   }
 

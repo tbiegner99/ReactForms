@@ -2,9 +2,13 @@ import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { storiesOf } from '@storybook/react';
 import Checkbox from '../../../src/form/elements/Checkbox';
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 
 storiesOf('Checkbox', module)
-  .add('displays correctly', () => <Checkbox label="Checkbox label" />)
+  .addDecorator(withKnobs)
+  .add('displays correctly', () => (
+    <Checkbox defaultChecked={boolean('checked', true)} label="Checkbox label" />
+  ))
   .add('has on change event', () => (
     <Checkbox
       checkedValue="a"

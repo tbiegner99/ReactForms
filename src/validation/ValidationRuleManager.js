@@ -153,13 +153,13 @@ export class ValidationRuleManager {
     return ruleObjects;
   }
 
-  validate(value, props) {
+  validate(value, props, formValues = {}) {
     let config = props;
     if (!Array.isArray(props)) {
       config = this.createRuleConfigurationFromProps(props);
     }
 
-    return Validator.validate(value, config);
+    return Validator.validate(value, config, formValues);
   }
 }
 export default new ValidationRuleManager();

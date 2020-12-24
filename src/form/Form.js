@@ -85,14 +85,14 @@ export default class Form extends FormElement {
 
   getJsonValue() {
     const ret = {};
-    const submittables = this.elements.filter((el) => el.submittable);
+    const submittables = this.elements.filter((el) => el.submittable && el.name);
     submittables.forEach((el) => {
       ret[el.name] = el.value;
     });
     return ret;
   }
 
-  notifyElementValidationState(element, validationResults) {
+  notifyElementValidationState(element, validationResults, showErrors) {
     const { onValidationStateChange } = this.props;
     let validationState = this[_validationState];
     const isCurrentValid = validationState.valid;
@@ -102,7 +102,9 @@ export default class Form extends FormElement {
       validationResults
     );
     validationState = this._rectifyValidationState(validationState);
-
+    if (showErrors) {
+      this.handleElementValidationFailures([validationResults]);
+    }
     if (validationState.valid !== isCurrentValid) {
       onValidationStateChange(validationState.valid, this, validationState);
     }
@@ -187,6 +189,7 @@ export default class Form extends FormElement {
       try {
         results = await el.validate(options);
       } catch (failureResults) {
+        console.error(failureResults);
         results = failureResults;
       }
       return {
@@ -282,12 +285,16 @@ export default class Form extends FormElement {
   handleValidationFailures(results, containingForm = this) {
     const { elementResults } = results;
     const resultsArray = Object.values(elementResults);
+    this.handleElementValidationFailures(resultsArray, containingForm);
+  }
+
+  handleElementValidationFailures(resultsArray, containingForm = this) {
     const validity = (item) => item.valid;
     const elementsByValidity = ArrayUtilities.partitionBy(resultsArray, validity);
-    elementsByValidity.false.forEach((result) =>
-      this.coordinateErrorMessageRendering(result, containingForm)
-    );
-    elementsByValidity.true.forEach((result) => this.clearErrorMessages(result));
+    const falseElements = elementsByValidity.false || [];
+    const trueElements = elementsByValidity.true || [];
+    falseElements.forEach((result) => this.coordinateErrorMessageRendering(result, containingForm));
+    trueElements.forEach((result) => this.clearErrorMessages(result));
   }
 
   async submit() {

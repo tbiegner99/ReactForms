@@ -17,6 +17,30 @@ export default class TextInput extends FormElement {
     }
   }
 
+  blur() {
+    this.refs.input.blur();
+  }
+
+  focus() {
+    this.refs.input.focus();
+  }
+
+  get selectionStart() {
+    return this.refs.input.selectionStart;
+  }
+
+  get selectionEnd() {
+    return this.refs.input.selectionEnd;
+  }
+
+  set selectionStart(selectionStart) {
+    this.refs.input.selectionStart = selectionStart;
+  }
+
+  set selectionEnd(selectionEnd) {
+    this.refs.input.selectionEnd = selectionEnd;
+  }
+
   get type() {
     return 'text';
   }

@@ -27,6 +27,10 @@ export default class Assert {
     Assert.that(obj instanceof clazz, message);
   }
 
+  static toBe(obj, expected, msg) {
+    Assert.that(obj === expected, msg);
+  }
+
   static toBeObject(obj, msg) {
     return Assert.toBeType(obj, 'object', msg);
   }

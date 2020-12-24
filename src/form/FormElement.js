@@ -39,6 +39,8 @@ export default class FormElement extends React.Component {
       valid: undefined,
       validationResults: null
     };
+    this.mounted = false;
+    this.unmounted = false;
     this.componentWillMount = this.willMount.bind(this, this.componentWillMount);
     this.componentWillUnmount = this.willUnmount.bind(this, this.componentWillUnmount);
   }
@@ -159,7 +161,8 @@ export default class FormElement extends React.Component {
 
   async willMount(componentWillMount) {
     this[_uniqueId] = this._registerSelf();
-    if (typeof componentWillMount === 'function') {
+    if (!this.mounted && typeof componentWillMount === 'function') {
+      this.mounted = true;
       componentWillMount.bind(this)();
     }
     try {
@@ -171,7 +174,8 @@ export default class FormElement extends React.Component {
 
   willUnmount(componentWillUnmount) {
     this._unregisterSelf();
-    if (typeof componentWillUnmount === 'function') {
+    if (!this.unmounted && typeof componentWillUnmount === 'function') {
+      this.unmounted = true;
       componentWillUnmount.bind(this)();
     }
   }
@@ -186,7 +190,8 @@ export default class FormElement extends React.Component {
     const options = opts || {};
     let validationOutput;
     try {
-      validationOutput = await ValidationManager.validate(this.value, this.props);
+      const formState = this.context.rootForm ? this.context.rootForm.getJsonValue() : {};
+      validationOutput = await ValidationManager.validate(this.value, this.props, formState);
     } catch (failureResults) {
       validationOutput = failureResults;
     }
@@ -204,7 +209,9 @@ export default class FormElement extends React.Component {
     });
 
     const { validationResults } = this.state;
-    if (!options.noNotify) this._notifyParentOfValidationState(validationResults);
+    if (!options.noNotify) {
+      this._notifyParentOfValidationState(validationResults, options.showErrors);
+    }
     this._raiseValidationStateChangeEvent(validationStateChange, validationResults);
     if (!elementIsValid && !options.ignoreFailure) {
       throw validationOutput;
@@ -216,9 +223,9 @@ export default class FormElement extends React.Component {
     return this.validate({ showErrors: true });
   }
 
-  _notifyParentOfValidationState(validationState) {
+  _notifyParentOfValidationState(validationState, showErrors) {
     if (this.parentForm) {
-      this.parentForm.notifyElementValidationState(this, validationState);
+      this.parentForm.notifyElementValidationState(this, validationState, showErrors);
     }
   }
 

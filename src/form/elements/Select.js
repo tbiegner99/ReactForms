@@ -1,16 +1,60 @@
 import React from 'react';
+import Radium from 'radium';
+import combineClasses from 'classnames';
 import FormElement from '../FormElement';
 import Assert from '../../utils/Assert';
 import Option from './Option';
 
-import './styles/Select.css';
+const SelectBoxStyles = {
+  position: 'relative',
+  background: 'white'
+};
+
+const OptionBoxStyles = {
+  border: '1px solid black',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '10px 20px',
+  cursor: 'pointer'
+};
+
+const SelectOptionStyles = {
+  cursor: 'pointer',
+  padding: '10px',
+  ':hover': {
+    background: '#777'
+  }
+};
+
+const getOptionsStyles = (closed) => {
+  return {
+    height: 'auto',
+    maxHeight: closed ? 0 : '100px',
+    overflowY: closed ? 'hidden' : 'auto',
+    transition: 'all .25s ease-in-out',
+    position: 'absolute',
+    width: '100%',
+    borderStyle: 'solid',
+    borderWidth: '0 1px 1px 1px',
+    background: 'inherit'
+  };
+};
+
+const getArrowStyles = (closed) => {
+  return {
+    transformOrigin: 'center',
+    transform: `rotate(${closed ? 180 : 0}deg)`,
+    transition: 'all .25s ease-in-out'
+  };
+};
 
 const ArrowIcon = (props) => (
-  <svg className={props.className} viewBox="0 0 10 10" width="10" height="10">
+  <svg {...props} viewBox="0 0 10 10" width="10" height="10">
     <path d="M0 0L10 0L5 10Z" />
   </svg>
 );
-export default class Select extends FormElement {
+class Select extends FormElement {
   static propTypes = {
     ...FormElement.propTypes,
     children: (props, propName, componentName) => {
@@ -36,8 +80,10 @@ export default class Select extends FormElement {
     this.state = Object.assign(this.state, { closed: true });
   }
 
-  componentWillMount() {
-    this.setState({ value: this.getInitialValue() });
+  componentDidMount() {
+    const value = this.getInitialValue();
+    const selectedOption = this.getOptionWithValue(value);
+    this.setState({ value, selectedOption });
   }
 
   tryValue(value) {
@@ -46,12 +92,13 @@ export default class Select extends FormElement {
   }
 
   valueIsAnOption(value) {
-    const valueIsChildValue = (child) => value === Option.getValueFromProps(child.props);
-    const valueExistsInOptions = React.Children.toArray(this.props.children).reduce(
-      (valueFound, child) => valueFound || valueIsChildValue(child),
-      false
-    );
+    const valueExistsInOptions = typeof this.getOptionWithValue(value) !== 'undefined';
     return typeof value !== 'undefined' && valueExistsInOptions;
+  }
+
+  getOptionWithValue(value) {
+    const valueIsChildValue = (child) => value === Option.getValueFromProps(child.props);
+    return React.Children.toArray(this.props.children).find((child) => valueIsChildValue(child));
   }
 
   getInitialValue() {
@@ -83,7 +130,7 @@ export default class Select extends FormElement {
       return;
     }
     const { value } = option;
-    await this.setState({ value });
+    await this.setState({ value, selectedOption: option });
     this.props.onChange(value, this);
   }
 
@@ -94,8 +141,9 @@ export default class Select extends FormElement {
   renderOption(child, selectChild) {
     const { className } = child.props;
     const { optionClass } = this.props;
-    const newClassName = `selectOption ${className} ${optionClass}`;
+    const newClassName = combineClasses(className, optionClass);
     return React.cloneElement(child, {
+      style: SelectOptionStyles,
       className: newClassName,
       onOptionSelect: (option) => this.selectOption(option),
       selected: selectChild
@@ -103,8 +151,8 @@ export default class Select extends FormElement {
   }
 
   render() {
-    const { closed, value } = this.state;
-    const { className } = this.props;
+    const { closed, value, selectedOption } = this.state;
+    const { className, placeholder } = this.props;
     let optionSelected = false;
     const options = React.Children.map(this.props.children, (child) => {
       const selected = child.props.value === this.value;
@@ -113,18 +161,25 @@ export default class Select extends FormElement {
       optionSelected = optionSelected || selected;
       return childItem;
     });
+
+    const placeholderComponent = <i className="placeholder">{placeholder || 'Select One...'}</i>;
+    const selectOption = this;
+    const selectedText = selectedOption ? selectedOption.props.text : placeholderComponent;
     return (
       <div
-        className={`__selectBox__ ${className}`}
+        style={SelectBoxStyles}
+        className={className}
         onClick={() => this.toggleOpen()}
         role="dropdown"
       >
-        <div className="__selectedOptionBox__">
-          <div className="valueDisplay">{value}</div>
-          <ArrowIcon className={`arrowIcon ${closed ? '' : 'up'}`} />
+        <div style={OptionBoxStyles}>
+          <div className="valueDisplay">{selectedText}</div>
+          <ArrowIcon className="arrowIcon" style={getArrowStyles(!closed)} />
         </div>
-        <div className={`options ${closed ? 'closed' : ''}`}>{options}</div>
+        <div style={getOptionsStyles(closed)}>{options}</div>
       </div>
     );
   }
 }
+
+export default Radium(Select);
