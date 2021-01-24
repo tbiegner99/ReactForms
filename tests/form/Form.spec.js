@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import FormElement from '../../src/form/FormElement';
 import Form from '../../src/form/Form';
 import testSubmit from './Form/submit';
-import testCustomErrorLabelManagement from './form/customErrors';
+import testCustomErrorLabelManagement from './Form/customErrorMessages';
 import testNativeForm from './Form/nativeForm';
 import testFormToJson from './Form/toJson';
 import testElementRegistration from './Form/elementRegistration';
