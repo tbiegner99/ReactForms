@@ -1,20 +1,24 @@
 import React from 'react';
 import HiddenField from './HiddenField';
 import Button from './Button';
+
 class FileUploader extends HiddenField {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
   get value() {
     return this.state.value;
   }
+
   componentDidUpdate(prevProps) {
     const { prompt } = this.props;
     if (prompt && prompt !== prevProps.prompt) {
       this.prompt();
     }
   }
+
   prompt() {
     this.refs.input.click();
   }
@@ -72,6 +76,7 @@ class FileUploader extends HiddenField {
     }
     await this.validate({ showErrors: true });
   }
+
   render() {
     const { accept, multiple, prompt, onChange, ...otherProps } = this.props;
     let acceptStr = accept;
@@ -85,12 +90,10 @@ class FileUploader extends HiddenField {
           ref="input"
           accept={acceptStr}
           multiple={multiple}
-          onChange={this._onFileChange.bind(this)}
+          onChange={() => this._onFileChange()}
           style={{ height: '1px', width: '1px' }}
         />
-        {typeof prompt === 'boolean' ? null : (
-          <Button onClick={this.prompt.bind(this)}>Upload</Button>
-        )}
+        {typeof prompt === 'boolean' ? null : <Button onClick={() => this.prompt()}>Upload</Button>}
         {this.renderErrorLabel()}
       </div>
     );

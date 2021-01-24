@@ -68,14 +68,12 @@ export default class GroupableElement extends FormElement {
     });
   }
 
-  willMount(componentWillMount) {
+  componentDidMount() {
     this[_groupId] = this._registerSelfWithGroup();
-    super.willMount(componentWillMount);
   }
 
-  willUnmount(componentWillUnmount) {
+  componentWillUnmount() {
     this._unregisterSelfWithGroup();
-    super.willUnmount(componentWillUnmount);
   }
 
   _registerSelfWithGroup() {

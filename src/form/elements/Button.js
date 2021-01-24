@@ -1,5 +1,5 @@
 import React from 'react';
-import combineClasses from "classnames"
+import combineClasses from 'classnames';
 import PropTypes from 'prop-types';
 import GroupableElement from './GroupableElement';
 import { NoOperation } from '../../utils/CommonFunctions';
@@ -21,10 +21,6 @@ export default class Button extends GroupableElement {
     return this.props.value;
   }
 
-  get defaultClassName() {
-    return `__btn_${this.type}__`;
-  }
-
   get type() {
     return 'default';
   }
@@ -38,9 +34,10 @@ export default class Button extends GroupableElement {
   }
 
   async onClick(e) {
-    const cancel = (await this.props.onClick(e)) === false;
+    const clickResult = await this.props.onClick(e);
+    const cancel = clickResult === false;
     if (cancel) return;
-   
+
     try {
       if (this.context.inputGroup) {
         await this.select();
@@ -49,21 +46,29 @@ export default class Button extends GroupableElement {
         await this.rootForm.submit();
       }
     } catch (err) {
-      console.error(err)
       // do nothing on submission fail. form will handle it
     }
   }
 
   render() {
-    const { className, children, type, ...otherProps } = this.props;
+    const {
+      className,
+      children,
+      type,
+      submittable,
+      validateOnChange,
+      validateOnBlur,
+      onValidationStateChange,
+      ...otherProps
+    } = this.props;
     const buttonType = this.submittable ? 'submit' : 'button';
-    const selected = this.selected;
+    const { selected } = this;
     return (
       <button
         type={buttonType}
         {...otherProps}
         onClick={(e) => this.onClick(e)}
-        className={combineClasses(this.defaultClassName, className, {selected})}
+        className={combineClasses(className, { selected })}
       >
         {children}
       </button>

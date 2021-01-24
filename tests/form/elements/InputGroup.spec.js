@@ -96,6 +96,32 @@ describe('Input group Tests', () => {
     });
   });
 
+  describe('selected element unregistration', () => {
+    let el;
+    beforeEach(() => {
+      el = mount(<LiteralGroupElement selected value={1} />, {
+        context: {
+          inputGroup: group
+        }
+      }).instance();
+      mount(<LiteralGroupElement value={2} />, {
+        context: {
+          inputGroup: group
+        }
+      }).instance();
+    });
+
+    it('removes selected element on unregistration', () => {
+      expect(group.value).toEqual(1);
+      expect(Object.keys(group.selectedElements)).toHaveLength(1);
+
+      expect(group.elements).toHaveLength(2);
+      el.componentWillUnmount();
+      expect(group.elements).toHaveLength(1);
+      expect(Object.keys(group.selectedElements)).toHaveLength(0);
+    });
+  });
+
   describe('element selection', () => {
     let el;
     let el2;

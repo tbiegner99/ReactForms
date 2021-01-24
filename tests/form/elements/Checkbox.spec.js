@@ -8,29 +8,16 @@ describe('checkbox', () => {
     expect(typeof Checkbox).toEqual('function');
   });
 
-  it('has a default className', () => {
-    expect(Checkbox.defaultClassname).toEqual('__checkboxElement__');
-  });
-
-  it('is a groupable elemendescribe("default checked values")t', () => {
+  it('is a groupable elemendescribe("default checked values")', () => {
     expect(new Checkbox({})).toBeInstanceOf(GroupableElement);
   });
 
   describe('default checked values', () => {
-    it('sets default checked state when defaultChecked prop is true', () => {
-      expect(new Checkbox({ defaultChecked: true }).checked).toEqual(true);
-    });
     it('sets default checked state when defaultSelected prop is true', () => {
       expect(new Checkbox({ defaultSelected: true }).checked).toEqual(true);
     });
-    it('sets default checked state when checked prop is true', () => {
-      expect(new Checkbox({ checked: true }).checked).toEqual(true);
-    });
-    it('uses defaultChecked prop when defaultCheked and checked are both supplied', () => {
-      expect(new Checkbox({ defaultChecked: false, checked: true }).checked).toEqual(false);
-    });
-    it('uses defaultChecked prop when defaultCheked and defaultSelected are both supplied', () => {
-      expect(new Checkbox({ defaultChecked: false, defaultSelected: true }).checked).toEqual(false);
+    it('sets default checked state when selected prop is true', () => {
+      expect(new Checkbox({ selected: true }).checked).toEqual(true);
     });
   });
 
@@ -72,7 +59,7 @@ describe('checkbox', () => {
       });
       it('fires changeEvent when key is pressed with focus', () => {
         const accessibilityClickSpy = jest.spyOn(instance, 'accessibilityClick');
-        el.find('.__checkElementRoot__').simulate('keyDown');
+        el.find('[role="checkbox"]').simulate('keyDown');
         expect(accessibilityClickSpy).toHaveBeenCalled();
       });
     });
@@ -112,12 +99,8 @@ describe('checkbox', () => {
     // to do write test with input group
 
     describe('rendering', () => {
-      it('renders a container with default class name', () => {
-        expect(el.find('div.__checkboxElement__').length).toEqual(1);
-      });
-
       it('appends suplied class name to container', () => {
-        expect(el.find('div.__checkboxElement__.myClass').length).toEqual(1);
+        expect(el.find('[role="checkbox"].myClass').length).toEqual(1);
       });
 
       it('renders an svg in root container for a checkbox', () => {

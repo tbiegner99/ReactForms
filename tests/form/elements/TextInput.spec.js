@@ -113,7 +113,6 @@ describe('TextInput Tests', () => {
       el = wrapper.instance();
       onChangeMock = jest.spyOn(el, 'onInputChange');
       onBlurMock = jest.spyOn(el, 'onInputBlur');
-      el.onInputBlur();
     });
     it('invokes onchange function when text is changed ', () => {
       wrapper.find('input').simulate('change', { target: { value: 'newVal' } });
@@ -123,6 +122,33 @@ describe('TextInput Tests', () => {
     it('invokes onchange function when text is changed ', () => {
       wrapper.find('input').simulate('blur', { target: { value: 'newVal' } });
       expect(onBlurMock).toHaveBeenCalled();
+    });
+
+    it('focuses element on focus method', () => {
+      wrapper = mount(<TextInput />, { attachTo: document.body });
+      el = wrapper.instance();
+      el.focus();
+      expect(wrapper.find('input').getDOMNode()).toHaveFocus();
+      wrapper.detach();
+    });
+
+    it('blurs element on blur method', () => {
+      wrapper = mount(<TextInput />, { attachTo: document.body });
+      el = wrapper.instance();
+      el.focus();
+      expect(wrapper.find('input').getDOMNode()).toHaveFocus();
+      el.blur();
+      expect(wrapper.find('input').getDOMNode()).not.toHaveFocus();
+      wrapper.detach();
+    });
+
+    it('allows for text selection control', () => {
+      wrapper = mount(<TextInput value="abcdefg" />, { attachTo: document.body });
+      el = wrapper.instance();
+      el.selectionStart = 1;
+      el.selectionEnd = 5;
+      expect(el.selectedText).toEqual('bcde');
+      wrapper.detach();
     });
   });
 });

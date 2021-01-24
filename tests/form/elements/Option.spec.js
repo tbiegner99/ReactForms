@@ -28,6 +28,15 @@ describe('Select option', () => {
       el = mount(<Option onOptionSelect={evt} className="opt" value="abcd" />);
       instance = el.instance();
     });
+    it('renders children as text', () => {
+      const el2 = mount(
+        <Option value="2">
+          <span className="opt">1</span>
+        </Option>
+      );
+      expect(el2.instance().value).toEqual('2');
+      expect(el2.find('.opt')).toHaveLength(1);
+    });
     it('exposes className prop', () => {
       expect(new Option({ className: 'opt' }).className).toEqual('opt');
     });

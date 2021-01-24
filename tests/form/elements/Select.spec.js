@@ -1,10 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Select from '../../../src/form/elements/Select';
+import { Select } from '../../../src/form/elements/Select';
 import Option from '../../../src/form/elements/Option';
 import FormElement from '../../../src/form/FormElement';
 
-describe.only('Select form element', () => {
+describe('Select form element', () => {
   let el;
   let instance;
   it('exists', () => {
@@ -95,45 +95,6 @@ describe.only('Select form element', () => {
       });
     });
   });
-  describe('allowed children', () => {
-    let errorSpy;
-    beforeEach(() => {
-      errorSpy = jest.spyOn(global.console, 'error');
-    });
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-    it('allows options as children', () => {
-      mount(
-        <Select>
-          <Option text="a" value="b" />
-        </Select>
-      );
-      expect(errorSpy).not.toHaveBeenCalled();
-    });
-    it('allows subclassed options as children', () => {
-      const SubOption = class extends Option {};
-
-      mount(
-        <Select>
-          <SubOption text="a" value="b" />
-        </Select>
-      );
-      expect(errorSpy).not.toHaveBeenCalled();
-    });
-    it('allows ony options as its children', () => {
-      mount(
-        <Select>
-          <div />
-        </Select>
-      );
-      expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Warning: Failed prop type: \`Select\`: children may only be an option. Found div`
-        )
-      );
-    });
-  });
 
   describe('display', () => {
     let optA;
@@ -151,8 +112,8 @@ describe.only('Select form element', () => {
       instance = el.instance();
     });
     it('has options closed initially', () => {
-      expect(el.find('.options')).toHaveLength(1);
-      expect(el.find('.options.closed')).toHaveLength(1);
+      expect(el.find('[role="listbox"]')).toHaveLength(1);
+      expect(el.find('[role="listbox"][closed="true"]')).toHaveLength(1);
     });
     it('calls renderOption to render each of its children', () => {
       const renderSpy = jest.spyOn(instance, 'renderOption');
@@ -177,8 +138,8 @@ describe.only('Select form element', () => {
   describe('on click', () => {
     it('opens options', () => {
       el.simulate('click');
-      expect(el.find('.options')).toHaveLength(1);
-      expect(el.find('.options.closed')).toHaveLength(0);
+      expect(el.find('[role="listbox"]')).toHaveLength(1);
+      expect(el.find('[role="listbox"][closed="false"]')).toHaveLength(1);
     });
     describe('when option clicked', () => {
       let optA;
@@ -230,7 +191,7 @@ describe.only('Select form element', () => {
           expect(onChangeSpy).toHaveBeenCalledWith('a', instance);
         });
         it('closes the options', () => {
-          expect(el.find('.options.closed')).toHaveLength(1);
+          expect(el.find('[role="listbox"][closed="true"]')).toHaveLength(1);
         });
       });
     });

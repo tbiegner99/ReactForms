@@ -1,5 +1,4 @@
 import Rule from '../Rule';
-import InvalidValueError from '../errors/InvalidValueError';
 import Assert from '../../utils/Assert';
 
 export default class EmailRule extends Rule {
@@ -12,7 +11,7 @@ export default class EmailRule extends Rule {
   }
 
   async validate(value) {
-    const emailRegex = /[a-zA-Z0-9.!#$%^&*_`~+=/?{|}]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*/;
+    const emailRegex = /[a-zA-Z0-9.!#$%^&*_`~+=/?{|}]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+/;
     Assert.toMatchRegex(emailRegex, value);
   }
 }

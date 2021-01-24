@@ -1,6 +1,7 @@
 import React from 'react';
 import Radium from 'radium';
 import combineClasses from 'classnames';
+import PropTypes from 'prop-types';
 import FormElement from '../FormElement';
 import Assert from '../../utils/Assert';
 import Option from './Option';
@@ -27,27 +28,23 @@ const SelectOptionStyles = {
   }
 };
 
-const getOptionsStyles = (closed) => {
-  return {
-    height: 'auto',
-    maxHeight: closed ? 0 : '100px',
-    overflowY: closed ? 'hidden' : 'auto',
-    transition: 'all .25s ease-in-out',
-    position: 'absolute',
-    width: '100%',
-    borderStyle: 'solid',
-    borderWidth: '0 1px 1px 1px',
-    background: 'inherit'
-  };
-};
+const getOptionsStyles = (closed) => ({
+  height: 'auto',
+  maxHeight: closed ? 0 : '100px',
+  overflowY: closed ? 'hidden' : 'auto',
+  transition: 'all .25s ease-in-out',
+  position: 'absolute',
+  width: '100%',
+  borderStyle: 'solid',
+  borderWidth: '0 1px 1px 1px',
+  background: 'inherit'
+});
 
-const getArrowStyles = (closed) => {
-  return {
-    transformOrigin: 'center',
-    transform: `rotate(${closed ? 180 : 0}deg)`,
-    transition: 'all .25s ease-in-out'
-  };
-};
+const getArrowStyles = (closed) => ({
+  transformOrigin: 'center',
+  transform: `rotate(${closed ? 180 : 0}deg)`,
+  transition: 'all .25s ease-in-out'
+});
 
 const ArrowIcon = (props) => (
   <svg {...props} viewBox="0 0 10 10" width="10" height="10">
@@ -57,20 +54,7 @@ const ArrowIcon = (props) => (
 class Select extends FormElement {
   static propTypes = {
     ...FormElement.propTypes,
-    children: (props, propName, componentName) => {
-      const children = props[propName];
-      let error = null;
-      React.Children.forEach(children, (child) => {
-        const { type } = child;
-        const isAnOption = type.prototype instanceof Option || type.prototype === Option;
-        if (isAnOption) {
-          return;
-        }
-        const name = typeof type === 'string' ? type : type.name;
-        error = new Error(`\`${componentName}\`: children may only be an option. Found ${name}`);
-      });
-      return error;
-    }
+    children: PropTypes.node
   };
 
   constructor(props) {
@@ -151,7 +135,7 @@ class Select extends FormElement {
   }
 
   render() {
-    const { closed, value, selectedOption } = this.state;
+    const { closed, selectedOption } = this.state;
     const { className, placeholder } = this.props;
     let optionSelected = false;
     const options = React.Children.map(this.props.children, (child) => {
@@ -163,23 +147,25 @@ class Select extends FormElement {
     });
 
     const placeholderComponent = <i className="placeholder">{placeholder || 'Select One...'}</i>;
-    const selectOption = this;
     const selectedText = selectedOption ? selectedOption.props.text : placeholderComponent;
     return (
       <div
         style={SelectBoxStyles}
         className={className}
         onClick={() => this.toggleOpen()}
-        role="dropdown"
+        role="select"
+        tabIndex="0"
       >
         <div style={OptionBoxStyles}>
           <div className="valueDisplay">{selectedText}</div>
           <ArrowIcon className="arrowIcon" style={getArrowStyles(!closed)} />
         </div>
-        <div style={getOptionsStyles(closed)}>{options}</div>
+        <div closed={`${closed}`} role="listbox" style={getOptionsStyles(closed)}>
+          {options}
+        </div>
       </div>
     );
   }
 }
-
+export { Select };
 export default Radium(Select);

@@ -1,14 +1,7 @@
 import React from 'react';
-import combineClasses from 'classnames';
 import GroupableElement from './GroupableElement';
 
-import styles from './styles/Checkbox.css';
-
 export default class Checkbox extends GroupableElement {
-  constructor(props) {
-    super(props);
-  }
-
   get value() {
     const { checkedValue = true, falseValue = false } = this.props;
 

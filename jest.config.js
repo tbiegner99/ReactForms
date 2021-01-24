@@ -3,6 +3,7 @@ module.exports = {
   testMatch: ['**/tests/**/*.spec.js'],
   collectCoverageFrom: ['**/src/**/*.js'],
   setupFiles: ['./tests/init.js'],
+  setupFilesAfterEnv: ['./tests/after-env.js'],
   coverageThreshold: {
     global: {
       branches: 100,

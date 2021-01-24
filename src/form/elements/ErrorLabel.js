@@ -22,6 +22,11 @@ class ErrorLabel extends Label {
     rootForm: PropTypes.instanceOf(FormElement)
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   get htmlFor() {
     return this.elementName;
   }
@@ -57,7 +62,7 @@ class ErrorLabel extends Label {
     return this.setState({ forced: true, ruleViolated, message: text, metadata });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       id: this._registerSelf()
     });

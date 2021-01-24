@@ -18,13 +18,11 @@ export default class MatchesFieldRule extends Rule {
     return Number.MAX_SAFE_INTEGER;
   }
 
-  getDefaultMessage(value) {
+  getDefaultMessage() {
     return `Value should match field ${this.nameArg}`;
   }
 
   async validate(value, formValues) {
-    if (!value) return;
-    console.log(this, this.nameArg);
     if (formValues[this.nameArg] !== value) {
       throw new InvalidValueError('Fields do not match');
     }

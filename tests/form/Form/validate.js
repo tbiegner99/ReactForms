@@ -46,7 +46,7 @@ export default () => {
               uniqueId: 0,
               numberOfInvalidElements: 1,
               numberOfRulesViolated: 1,
-              message: 'Rule violated for value  - required'
+              message: 'Field is required.'
             }
           }
         });
@@ -244,7 +244,7 @@ export default () => {
                   0: {
                     valid: false,
                     numberOfInvalidElements: 1,
-                    message: 'Rule violated for value  - required',
+                    message: 'Field is required.',
                     numberOfRulesViolated: 1,
                     name: 'sf1.el1',
                     ruleName: 'required',
@@ -254,7 +254,7 @@ export default () => {
                   1: {
                     valid: false,
                     numberOfInvalidElements: 1,
-                    message: 'Rule violated for value  - required',
+                    message: 'Field is required.',
                     numberOfRulesViolated: 1,
                     name: 'sf1.el2',
                     uniqueId: 1,

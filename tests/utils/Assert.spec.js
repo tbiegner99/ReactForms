@@ -63,6 +63,15 @@ describe('Assertion utility', () => {
       expect(assertThatNot.bind(null, obj)).toThrow(`Expected condition to be false`);
     });
   });
+  it('asserts object is same instance', () => {
+    const foo = {};
+    const bar = foo;
+    expect(() => Assert.toBe({}, foo)).toThrow();
+    expect(() => Assert.toBe(foo, bar)).not.toThrow();
+    expect(() => Assert.toBe(3, 4)).toThrow();
+    expect(() => Assert.toBe(4, 4)).not.toThrow();
+    expect(() => Assert.toBe('a', 'a')).not.toThrow();
+  });
   it('asserts element is defined', () => {
     const assertThat = (cond) => Assert.toBeDefined(cond);
     const validValues = [null, false, 0, 1, ''];

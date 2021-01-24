@@ -6,10 +6,7 @@ export default class Rule {
   // a rule may have a single argument. It may be an array, but its up to the rule to enforce.
   // They will be passed in on rule creation
   // eslint-disable-next-line no-useless-constructor, no-unused-vars, no-empty-function
-  constructor(args) {
-    this.getDefaultMessage = this.getDefaultMessage.bind(this);
-    this.validate = this.validate.bind(this);
-  }
+  constructor(args) {}
 
   get defaultPriority() {
     return 1;

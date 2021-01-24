@@ -1,8 +1,4 @@
-.outerCircle {
-    stroke:#666;
-    stroke-width:.5;
-    fill:rgba(0,0,0,0);
-}
+
 
 .radioFill {
     transition: all .2s ease-in-out;
@@ -13,7 +9,6 @@
 
 .radioFill.checked {
     opacity: 1;
-    transition: all .2s ease-in-out;
     transition-delay:.5s;
 }
 

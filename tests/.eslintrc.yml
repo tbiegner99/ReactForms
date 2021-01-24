@@ -2,3 +2,6 @@ extends: ["airbnb", "prettier"]
 parser: "babel-eslint"
 env: 
   jest: true
+rules:
+    class-methods-use-this: 0
+    react/jsx-filename-extension: 0

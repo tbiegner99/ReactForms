@@ -27,11 +27,6 @@ describe('Groupable Element Tests', () => {
     it('sets default selected state when selected prop is true', () => {
       expect(new GroupableElement({ selected: true }).selected).toEqual(true);
     });
-    it('uses defaultSelected prop when defaultSelected and checked are both supplied', () => {
-      expect(new GroupableElement({ defaultSelected: false, selected: true }).selected).toEqual(
-        false
-      );
-    });
   });
 
   describe('when inside a parent context', () => {

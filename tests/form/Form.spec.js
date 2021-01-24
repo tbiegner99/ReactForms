@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import FormElement from '../../src/form/FormElement';
 import Form from '../../src/form/Form';
 import testSubmit from './Form/submit';
+import testCustomErrorLabelManagement from './form/customErrors';
 import testNativeForm from './Form/nativeForm';
 import testFormToJson from './Form/toJson';
 import testElementRegistration from './Form/elementRegistration';
@@ -67,9 +68,6 @@ describe('Form', () => {
 
     testNativeForm();
 
-    describe('render function', () => {
-      //  it('renders wrapper form when form is root');
-      //  it('renders wrapper div when form is not root');
-    });
+    testCustomErrorLabelManagement();
   });
 });

@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import Button, { SubmitButton } from '../../../src/form/elements/Button';
 import GroupableElement from '../../../src/form/elements/GroupableElement';
 import Form from '../../../src/form/Form';
+import InputGroup from '../../../src/form/elements/InputGroup';
 
 describe('Button Tests', () => {
   let button;
@@ -36,8 +37,25 @@ describe('Button Tests', () => {
     expect(button.value).toBe(6);
   });
 
-  it('returns a default class name with type', () => {
-    expect(button.defaultClassName).toBe('__btn_default__');
+  describe('when is part of input group', () => {
+    let group;
+    let submitButton;
+    let buttonInstance;
+    beforeEach(() => {
+      group = mount(<InputGroup />).instance();
+      submitButton = mount(<Button value={6} name="btn" />, {
+        context: {
+          inputGroup: group
+        }
+      });
+      buttonInstance = submitButton.instance();
+      jest.spyOn(buttonInstance, 'select').mockResolvedValue();
+    });
+
+    it('selects current button', async () => {
+      await buttonInstance.onClick();
+      expect(buttonInstance.select).toHaveBeenCalled();
+    });
   });
 
   describe('Submit Button', () => {
@@ -46,7 +64,7 @@ describe('Button Tests', () => {
     beforeEach(() => {
       submit = jest.fn();
       wrapper = mount(
-        <Form onSubmit={submit}>
+        <Form onSubmit={submit} native={false}>
           <SubmitButton data-prop="value">Submit</SubmitButton>
         </Form>
       );
@@ -60,12 +78,13 @@ describe('Button Tests', () => {
   });
 
   describe('on click', () => {
-    it('raises event', () => {
+    it('raises event', async () => {
       const clickSpy = jest.fn();
       const submitButton = mount(<Button onClick={clickSpy} submittable value="me" name="btn" />);
-      submitButton.simulate('click');
+      await submitButton.instance().onClick();
       expect(clickSpy).toHaveBeenCalled();
     });
+
     describe('is submit button', () => {
       let buttonForm;
       let submitButton;
@@ -73,7 +92,7 @@ describe('Button Tests', () => {
       let buttonInstance;
       beforeEach(() => {
         submitSpy = jest.fn();
-        buttonForm = mount(<Form onSubmit={submitSpy} />).instance();
+        buttonForm = mount(<Form onSubmit={submitSpy} native={false} />).instance();
         submitButton = mount(<Button submittable onClick={() => 0} value={6} name="btn" />, {
           context: {
             rootForm: buttonForm,
@@ -92,7 +111,7 @@ describe('Button Tests', () => {
         });
         buttonInstance = submitButton.instance();
 
-        await expect(buttonInstance.onClick(null)).resolves.toBeUndefined();
+        await buttonInstance.onClick(null);
         expect(submitSpy).not.toHaveBeenCalled();
       });
       it('calls onClick function on click', () => {
@@ -101,7 +120,7 @@ describe('Button Tests', () => {
         expect(mock).toHaveBeenCalled();
       });
       it('fires form submission onClick', async () => {
-        await expect(buttonInstance.onClick(null)).resolves.toBeUndefined();
+        await buttonInstance.onClick(null);
 
         expect(submitSpy).toHaveBeenCalledWith({ btn: 6 }, buttonForm);
       });
@@ -113,7 +132,7 @@ describe('Button Tests', () => {
         });
         buttonInstance = submitButton.instance();
 
-        await expect(buttonInstance.onClick(null)).resolves.toBeUndefined();
+        await buttonInstance.onClick(null);
         expect(submitSpy).not.toHaveBeenCalled();
       });
       it('does not submit form if button is not submittable', async () => {

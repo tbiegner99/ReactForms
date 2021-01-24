@@ -20,7 +20,7 @@ class ExampleFormElement extends FormElement {
     return this.props.value;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.mounted = true;
   }
 
@@ -63,6 +63,21 @@ describe('Form Element Component', () => {
       expect(el.errorMessage).toBe('My error message');
     });
   });
+
+  describe('error label management', () => {
+    let el;
+    beforeEach(() => {
+      el = mount(<FormElement name="el1" />);
+    });
+    it('sets state to signal hiding error messages when form tells element to yield error label management', () => {
+      el.setState({ showErrors: true });
+      expect(el.instance().showErrors).toEqual(true);
+      el.instance().yieldErrorLabelManagement();
+      expect(el.instance().showErrors).toEqual(false);
+      expect(el.state('ignoreErrorRendering')).toEqual(true);
+    });
+  });
+
   describe('The instance of the base form elment', () => {
     let baseInstance;
     beforeEach(() => {
@@ -301,8 +316,24 @@ describe('Form Element Component', () => {
       it('calls validation manager to perform validation', async () => {
         const elJsx = mount(<ExampleFormElement required value={5} />);
         const el = elJsx.instance();
+        jest.clearAllMocks();
         await el.validate();
-        expect(validateSpy).toHaveBeenCalledWith(el.value, el.props);
+        expect(validateSpy).toHaveBeenCalledWith(el.value, el.props, {});
+      });
+
+      it('calls validation manager to perform validation with form state', async () => {
+        const form = new Form({});
+        jest.spyOn(form, 'getJsonValue').mockReturnValue('formData');
+        const elJsx = mount(<ExampleFormElement required value={5} />, {
+          context: {
+            rootForm: form,
+            parentForm: form
+          }
+        });
+        const el = elJsx.instance();
+        jest.clearAllMocks();
+        await el.validate();
+        expect(validateSpy).toHaveBeenCalledWith(el.value, el.props, 'formData');
       });
       it('updates state with validation results', async () => {
         const elJsx = mount(<ExampleFormElement required value={5} />);
@@ -339,7 +370,7 @@ describe('Form Element Component', () => {
           uniqueId: null,
           name: 'element',
           ruleName: 'required',
-          message: 'Rule violated for value null - required',
+          message: 'Field is required.',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         });
@@ -367,7 +398,7 @@ describe('Form Element Component', () => {
           name: 'element',
           uniqueId: 0,
           ruleName: 'required',
-          message: 'Rule violated for value null - required',
+          message: 'Field is required.',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         };
@@ -409,12 +440,18 @@ describe('Form Element Component', () => {
           name: undefined,
           uniqueId: 0,
           ruleName: 'required',
-          message: 'Rule violated for value null - required',
+          message: 'Field is required.',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         };
-        await expect(el.validate({ showErrors: true })).rejects.toEqual(result);
-        expect(formSpy).toHaveBeenCalledWith(el, result);
+        try {
+          await el.validate({ showErrors: true });
+        } catch (err) {
+          expect(err).toEqual(result);
+          expect(formSpy).toHaveBeenCalledWith(el, result, true);
+          return;
+        }
+        throw new Error('expected failure');
       });
       it('shows errors on full validate', async () => {
         const elJsx = mount(<ExampleFormElement required value={null} />);
@@ -424,7 +461,7 @@ describe('Form Element Component', () => {
           isForm: false,
           uniqueId: null,
           ruleName: 'required',
-          message: 'Rule violated for value null - required',
+          message: 'Field is required.',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         });

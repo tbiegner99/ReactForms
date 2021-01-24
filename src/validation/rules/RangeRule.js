@@ -1,5 +1,4 @@
 import Rule from '../Rule';
-import InvalidValueError from '../errors/InvalidValueError';
 import Assert from '../../utils/Assert';
 import MaxRule from './MaxRule';
 import MinRule from './MinRule';
@@ -7,11 +6,16 @@ import MinRule from './MinRule';
 export default class RangeRule extends Rule {
   constructor(...args) {
     super();
-    console.log(args);
     Assert.toBeArray(args, `Expected arguments to be an array of length 2`);
-    Assert.that(args.length === 2, 'Expected exactly 2 arguments, min and max');
-    this.min = new MinRule([args[0]]);
-    this.max = new MaxRule([args[1]]);
+    let range = args;
+    if (args.length === 1) {
+      Assert.toBeArray(args[0], `Expected arguments to be an array of length 2`);
+      [range] = args;
+    }
+    Assert.that(range.length === 2, 'Expected exactly 2 arguments, min and max');
+    const [min, max] = range;
+    this.min = new MinRule(min);
+    this.max = new MaxRule(max);
   }
 
   static get ruleName() {

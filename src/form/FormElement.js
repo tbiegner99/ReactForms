@@ -16,6 +16,11 @@ export default class FormElement extends React.Component {
     onBlur: PropTypes.func
   };
 
+  static contextTypes = {
+    parentForm: PropTypes.instanceOf(FormElement),
+    rootForm: PropTypes.instanceOf(FormElement)
+  };
+
   static defaultProps = {
     submittable: undefined,
     name: undefined,
@@ -27,11 +32,6 @@ export default class FormElement extends React.Component {
     onBlur: NoOperation
   };
 
-  static contextTypes = {
-    parentForm: PropTypes.instanceOf(FormElement),
-    rootForm: PropTypes.instanceOf(FormElement)
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +41,7 @@ export default class FormElement extends React.Component {
     };
     this.mounted = false;
     this.unmounted = false;
-    this.componentWillMount = this.willMount.bind(this, this.componentWillMount);
+    this.componentDidMount = this.willMount.bind(this, this.componentDidMount);
     this.componentWillUnmount = this.willUnmount.bind(this, this.componentWillUnmount);
   }
 
@@ -253,7 +253,7 @@ export default class FormElement extends React.Component {
     if (!this.showErrors) {
       return null;
     }
-    return <span>{this.errorMessage}</span>;
+    return <span data-role="error-msg">{this.errorMessage}</span>;
   }
 
   render() {

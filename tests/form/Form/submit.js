@@ -117,22 +117,20 @@ export default () => {
           const err = { valid: false };
           throw err;
         });
-        try {
-          await form.instance().submit();
-          throw new Error('Expected validation failure');
-        } catch (result) {
-          const expectResult = {
-            success: false,
-            validationResult: { valid: false },
-            message: 'Validation failed',
-            value: { el: 3 }
-          };
 
-          expect(validateSpy).toHaveBeenCalled();
-          expect(submitSpy).not.toHaveBeenCalled();
-          expect(beforeSubmitSpy).toHaveBeenCalled();
-          expect(result).toEqual(expectResult);
-        }
+        const result = await form.instance().submit();
+
+        const expectResult = {
+          success: false,
+          validationResult: { valid: false },
+          message: 'Validation failed',
+          value: { el: 3 }
+        };
+
+        expect(validateSpy).toHaveBeenCalled();
+        expect(submitSpy).not.toHaveBeenCalled();
+        expect(beforeSubmitSpy).toHaveBeenCalled();
+        expect(result).toEqual(expectResult);
       });
       it('should cancel submission if presubmit returns rejected promise', async () => {
         const submitSpy = jest.fn();
@@ -149,23 +147,21 @@ export default () => {
         const validateSpy = jest
           .spyOn(form.instance(), 'validate')
           .mockReturnValue({ valid: true });
-        try {
-          await form.instance().submit();
-          throw new Error('Expected presubmit failure');
-        } catch (result) {
-          const expectResult = {
-            success: false,
-            validationResult: { valid: true },
-            message: 'Presubmit failed',
-            value: { el: 3 },
-            details: { message: 'Error occurred' }
-          };
 
-          expect(validateSpy).toHaveBeenCalled();
-          expect(submitSpy).not.toHaveBeenCalled();
-          expect(beforeSubmitSpy).toHaveBeenCalled();
-          expect(result).toEqual(expectResult);
-        }
+        const result = await form.instance().submit();
+
+        const expectResult = {
+          success: false,
+          validationResult: { valid: true },
+          message: 'Presubmit failed',
+          value: { el: 3 },
+          details: { message: 'Error occurred' }
+        };
+
+        expect(validateSpy).toHaveBeenCalled();
+        expect(submitSpy).not.toHaveBeenCalled();
+        expect(beforeSubmitSpy).toHaveBeenCalled();
+        expect(result).toEqual(expectResult);
       });
       it('should cancel submission if presubmit returns false', async () => {
         const submitSpy = jest.fn();
@@ -179,23 +175,21 @@ export default () => {
         const validateSpy = jest
           .spyOn(form.instance(), 'validate')
           .mockReturnValue({ valid: true });
-        try {
-          await form.instance().submit();
-          throw new Error('Expected presubmit failure');
-        } catch (result) {
-          const expectResult = {
-            success: false,
-            validationResult: { valid: true },
-            message: 'Presubmit failed',
-            value: { el: 3 },
-            details: { message: 'Returned false' }
-          };
 
-          expect(validateSpy).toHaveBeenCalled();
-          expect(submitSpy).not.toHaveBeenCalled();
-          expect(beforeSubmitSpy).toHaveBeenCalled();
-          expect(result).toEqual(expectResult);
-        }
+        const result = await form.instance().submit();
+
+        const expectResult = {
+          success: false,
+          validationResult: { valid: true },
+          message: 'Presubmit failed',
+          value: { el: 3 },
+          details: { message: 'Returned false' }
+        };
+
+        expect(validateSpy).toHaveBeenCalled();
+        expect(submitSpy).not.toHaveBeenCalled();
+        expect(beforeSubmitSpy).toHaveBeenCalled();
+        expect(result).toEqual(expectResult);
       });
       it('handles error from onSubmit', async () => {
         const submitSpy = jest.fn().mockImplementation(() => {
@@ -211,23 +205,20 @@ export default () => {
         const validateSpy = jest
           .spyOn(form.instance(), 'validate')
           .mockReturnValue({ valid: true });
-        try {
-          await form.instance().submit();
-          throw new Error('Expected submission failure');
-        } catch (result) {
-          const expectResult = {
-            success: false,
-            validationResult: { valid: true },
-            message: 'Submission failed',
-            value: { el: 3 },
-            details: new Error('An error happened')
-          };
+        const result = await form.instance().submit();
 
-          expect(validateSpy).toHaveBeenCalled();
-          expect(submitSpy).toHaveBeenCalled();
-          expect(beforeSubmitSpy).toHaveBeenCalled();
-          expect(result).toEqual(expectResult);
-        }
+        const expectResult = {
+          success: false,
+          validationResult: { valid: true },
+          message: 'Submission failed',
+          value: { el: 3 },
+          details: new Error('An error happened')
+        };
+
+        expect(validateSpy).toHaveBeenCalled();
+        expect(submitSpy).toHaveBeenCalled();
+        expect(beforeSubmitSpy).toHaveBeenCalled();
+        expect(result).toEqual(expectResult);
       });
       it('invokes on submit failure event on submission failures', async () => {
         const submitFailSpy = jest.fn();
@@ -241,18 +232,15 @@ export default () => {
           const err = { valid: false };
           throw err;
         });
-        try {
-          await form.instance().submit();
-          throw new Error('Expected validation failure');
-        } catch (result) {
-          expect(validateSpy).toHaveBeenCalled();
-          expect(submitFailSpy).toHaveBeenCalledWith({
-            success: false,
-            validationResult: { valid: false },
-            message: 'Validation failed',
-            value: { el: 3 }
-          });
-        }
+        await form.instance().submit();
+
+        expect(validateSpy).toHaveBeenCalled();
+        expect(submitFailSpy).toHaveBeenCalledWith({
+          success: false,
+          validationResult: { valid: false },
+          message: 'Validation failed',
+          value: { el: 3 }
+        });
       });
     });
   });

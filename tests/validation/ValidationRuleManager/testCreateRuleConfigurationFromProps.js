@@ -203,14 +203,14 @@ export default () => {
           required: true
         });
         const reqdRule = new RequiredRule();
-        expect(config).toEqual([
-          {
-            rule: reqdRule,
-            name: RequiredRule.ruleName,
-            message: reqdRule.getDefaultMessage,
-            priority: 0
-          }
-        ]);
+        expect(config).toHaveLength(1);
+        const expected = {
+          rule: reqdRule,
+          name: RequiredRule.ruleName,
+          message: reqdRule.getDefaultMessage,
+          priority: 0
+        };
+        expect(config[0]).toEqual(expected);
       });
     });
   });

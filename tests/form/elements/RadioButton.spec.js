@@ -19,10 +19,10 @@ describe('Radio button', () => {
   });
 
   it('renders fill when checked', () => {
-    expect(el.find('.outerStroke.checked').length).toEqual(0);
-    expect(el.find('.radioFill.checked').length).toEqual(0);
+    expect(el.find('[data-role="outerCircle"][data-selected="false"]').length).toEqual(1);
+    expect(el.find('[data-role="radioFill"][data-selected="false"]').length).toEqual(1);
     el.setState({ selected: true });
-    expect(el.find('.outerStroke.checked').length).toEqual(1);
-    expect(el.find('.radioFill.checked').length).toEqual(1);
+    expect(el.find('[data-role="outerCircle"][data-selected="true"]').length).toEqual(1);
+    expect(el.find('[data-role="radioFill"][data-selected="true"]').length).toEqual(1);
   });
 });

@@ -189,7 +189,6 @@ export default class Form extends FormElement {
       try {
         results = await el.validate(options);
       } catch (failureResults) {
-        console.error(failureResults);
         results = failureResults;
       }
       return {
@@ -234,12 +233,14 @@ export default class Form extends FormElement {
       vaild: results.valid
     });
 
-    if (results.valid) {
-      return results;
-    }
     if (options.showErrors) {
       this.handleValidationFailures(results);
     }
+
+    if (results.valid) {
+      return results;
+    }
+
     throw results;
   }
 
@@ -362,7 +363,7 @@ export default class Form extends FormElement {
       if (typeof onSubmissionFailure === 'function') {
         onSubmissionFailure(failure);
       }
-      throw failure;
+      return failure;
     }
   }
 

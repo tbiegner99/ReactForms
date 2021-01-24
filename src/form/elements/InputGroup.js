@@ -106,7 +106,16 @@ export default class InputGroup extends GroupableElement {
   }
 
   render() {
-    const { children, name, ...otherProps } = this.props;
+    const {
+      children,
+      name,
+      submittable,
+      validateOnChange,
+      validateOnBlur,
+      onValidationStateChange,
+      multiValue,
+      ...otherProps
+    } = this.props;
     return <div {...otherProps}>{children}</div>;
   }
 }
