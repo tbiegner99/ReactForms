@@ -148,12 +148,16 @@ class Select extends FormElement {
 
     const placeholderComponent = <i className="placeholder">{placeholder || 'Select One...'}</i>;
     const selectedText = selectedOption ? selectedOption.props.text : placeholderComponent;
+    const selectAction = () => this.toggleOpen();
     return (
       <div
         style={SelectBoxStyles}
         className={className}
-        onClick={() => this.toggleOpen()}
-        role="select"
+        onClick={selectAction}
+        onKeyPress={selectAction}
+        role="combobox"
+        aria-expanded={!closed}
+        aria-controls="todo"
         tabIndex="0"
       >
         <div style={OptionBoxStyles}>

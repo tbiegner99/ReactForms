@@ -37,12 +37,15 @@ class Option extends React.Component {
 
   render() {
     const { onOptionSelect, text, value, className, children, ...otherProps } = this.props;
+    const optionAction = () => onOptionSelect(this);
     return (
       <div
         role="option"
         tabIndex="0"
-        onClick={() => onOptionSelect(this)}
+        onClick={optionAction}
+        onKeyPress={optionAction}
         className={className}
+        aria-selected={false}
         {...otherProps}
       >
         {text || children || value}
