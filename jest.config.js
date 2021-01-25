@@ -4,6 +4,7 @@ module.exports = {
   collectCoverageFrom: ['**/src/**/*.js'],
   setupFiles: ['./tests/init.js'],
   setupFilesAfterEnv: ['./tests/after-env.js'],
+  testEnvironmentOptions: { resources: 'usable' },
   coverageThreshold: {
     global: {
       branches: 100,

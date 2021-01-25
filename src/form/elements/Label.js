@@ -22,11 +22,15 @@ class Label extends React.Component {
     return this.props.children;
   }
 
+  getRenderableProps(props) {
+    return props;
+  }
+
   render() {
     const { className, children, for: forProp, ...props } = this.props;
 
     return (
-      <label {...props} htmlFor={this.htmlFor} className={className}>
+      <label {...this.getRenderableProps(props)} htmlFor={this.htmlFor} className={className}>
         {this.renderedMessage}
       </label>
     );

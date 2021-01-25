@@ -67,7 +67,7 @@ export default class TextInput extends FormElement {
   }
 
   render() {
-    const { value, defaultValue, name, onChange, onBlur, ...otherProps } = this.props;
+    const { value, defaultValue, name,onValidationStateChange,validateOnChange,validateOnBlur,submittable, onChange, onBlur, ...otherProps } = this.props;
 
     return (
       <div>

@@ -256,7 +256,7 @@ export default class Form extends FormElement {
     return Boolean(this.getLabelForElement(elementName));
   }
 
-  clearErrorMessages(result, containingForm) {
+  clearErrorMessages(result, containingForm=this) {
     const { name, uniqueId, isForm } = result;
 
     if (this.hasLabelForElement(name)) {

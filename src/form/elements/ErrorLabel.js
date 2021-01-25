@@ -33,9 +33,6 @@ class ErrorLabel extends Label {
 
   get elementName() {
     const { for: forProp } = this.props;
-    if (forProp instanceof FormElement) {
-      return forProp.fullName;
-    }
     return forProp;
   }
 
@@ -84,6 +81,11 @@ class ErrorLabel extends Label {
     if (rootForm) {
       rootForm.unregisterLabel(this, this.elementName);
     }
+  }
+
+  getRenderableProps(props) {
+    const { onFormatMessage, ...otherProps } = props;
+    return otherProps;
   }
 }
 
