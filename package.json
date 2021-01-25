@@ -1,8 +1,9 @@
 {
-  "name": "@tbiegner99/reactforms",
+  "name": "@tbiegner99/react-forms",
   "version": "1.0.0",
   "description": "A component utility library for react",
-  "main": "index.js",
+  "module": "./build/esm/index.esm.js",
+  "type": "module",
   "directories": {
     "test": "tests"
   },
@@ -16,11 +17,12 @@
     "build-storybook": "build-storybook",
     "lint-fix": "eslint --fix src tests",
     "lint": "eslint src tests",
-    "prepush": "npm run lint && npm run coverage"
+    "prepush": "npm run lint && npm run coverage",
+    "build": "rollup"
   },
   "repository": {
     "type": "git",
-    "url": "g"
+    "url": "https://github.com/tbiegner99/ReactForms"
   },
   "keywords": [
     "forms",
@@ -28,7 +30,7 @@
     "validation"
   ],
   "author": "TJ Biegner",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "classnames": "^2.2.6",
     "prop-types": "^15.6.0",
@@ -47,6 +49,8 @@
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-node-resolve": "^11.1.0",
     "@storybook/addon-actions": "^3.4.0",
     "@storybook/addon-knobs": "^5.3.21",
     "@storybook/addon-links": "^3.4.12",
@@ -76,6 +80,9 @@
     "prettier": "^1.19.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "rollup": "^2.38.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^7.0.2",
     "storybook": "^5.3.21",
     "style-loader": "^0.20.3",
     "webpack": "^4.46.0"
