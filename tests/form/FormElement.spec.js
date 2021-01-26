@@ -27,6 +27,9 @@ class ExampleFormElement extends FormElement {
   componentWillUnmount() {
     this.mounted = false;
   }
+  render() {
+    return super.renderErrorLabel();
+  }
 }
 
 describe('Form Element Component', () => {
@@ -469,7 +472,26 @@ describe('Form Element Component', () => {
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1
         });
+        elJsx.update();
         expect(el.showErrors).toBe(true);
+        expect(elJsx.find("[data-role='error-msg']")).toHaveLength(1);
+      });
+
+      it('hides errors on full validate if hide errors prop is passed', async () => {
+        const elJsx = mount(<ExampleFormElement hideErrors required value={null} />);
+        const el = elJsx.instance();
+        await expect(el.fullValidate()).rejects.toEqual({
+          valid: false,
+          isForm: false,
+          uniqueId: null,
+          ruleName: 'required',
+          message: 'Field is required.',
+          numberOfInvalidElements: 1,
+          numberOfRulesViolated: 1
+        });
+        elJsx.update();
+        expect(el.showErrors).toBe(false);
+        expect(elJsx.find("[data-role='error-msg']")).toHaveLength(0);
       });
     });
   });
