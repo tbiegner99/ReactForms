@@ -18,6 +18,7 @@
     "lint-fix": "eslint --fix src tests",
     "lint": "eslint src tests",
     "prepush": "npm run lint && npm run coverage",
+    "prepublishOnly": "npm run build",
     "build": "rollup"
   },
   "repository": {
