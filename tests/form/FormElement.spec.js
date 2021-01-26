@@ -377,11 +377,13 @@ describe('Form Element Component', () => {
       });
       it('triggers onValidationStateChange only when validation state changes', async () => {
         const stateChange = jest.fn();
+        const validationFinished = jest.fn();
         const parentForm = mount(<Form />).instance();
         const elJsx = mount(
           <ExampleFormElement
             name="element"
             onValidationStateChange={stateChange}
+            onValidationFinished={validationFinished}
             required
             value={null}
           />,
@@ -404,6 +406,7 @@ describe('Form Element Component', () => {
         };
         await expect(el.validate({ showErrors: true })).rejects.toEqual(result);
         expect(stateChange).toHaveBeenCalledWith(false, el, result);
+        expect(validationFinished).toHaveBeenCalledWith(result);
         stateChange.mockReset();
         elJsx.setProps({ value: 1 });
         result = {
@@ -424,6 +427,7 @@ describe('Form Element Component', () => {
         lastValidationResult = await el.validate({ showErrors: true });
         expect(lastValidationResult).toEqual(result);
         expect(stateChange).not.toHaveBeenCalled();
+        expect(validationFinished).toHaveBeenCalledWith(result);
       });
       it('notifies the parent form of its validation state', async () => {
         const parentForm = mount(<Form />).instance();

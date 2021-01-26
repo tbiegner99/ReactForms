@@ -10,7 +10,9 @@ export default class FormElement extends React.Component {
     submittable: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
     validateOnChange: PropTypes.bool,
     validateOnBlur: PropTypes.bool,
+    hideErrors: PropTypes.bool,
 
+    onValidationFinished: PropTypes.func,
     onValidationStateChange: PropTypes.func,
     onChange: PropTypes.func,
     onBlur: PropTypes.func
@@ -22,11 +24,13 @@ export default class FormElement extends React.Component {
   };
 
   static defaultProps = {
+    hideErrors: false,
     submittable: undefined,
     name: undefined,
     validateOnChange: undefined,
     validateOnBlur: undefined,
 
+    onValidationFinished: NoOperation,
     onValidationStateChange: NoOperation,
     onChange: NoOperation,
     onBlur: NoOperation
@@ -96,7 +100,7 @@ export default class FormElement extends React.Component {
   }
 
   get showErrors() {
-    return this.state.showErrors && !this.state.ignoreErrorRendering;
+    return !this.props.hideErrors && this.state.showErrors && !this.state.ignoreErrorRendering;
   }
 
   get isValid() {
@@ -233,6 +237,7 @@ export default class FormElement extends React.Component {
     if (validationStateChange) {
       this.props.onValidationStateChange(validationResults.valid, this, validationResults);
     }
+    this.props.onValidationFinished(validationResults);
   }
 
   _registerSelf() {
