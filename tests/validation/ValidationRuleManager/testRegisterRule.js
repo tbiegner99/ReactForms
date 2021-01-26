@@ -2,13 +2,13 @@ import { ValidationRuleManager } from '../../../src/validation/ValidationRuleMan
 import Rule from '../../../src/validation/Rule';
 
 const InvalidRule = class extends Rule {
-  get name() {
+  static get name() {
     return '';
   }
 };
 
 const ValidRule = class extends Rule {
-  get name() {
+  static get name() {
     return 'ruleA';
   }
 };
@@ -35,19 +35,26 @@ export default () => {
     });
     it('throws an error if a rule has an empty rule name', () => {
       const addIllegalRule = () => {
-        ruleManager.registerRule(new InvalidRule());
+        ruleManager.registerRule(InvalidRule);
       };
       expect(addIllegalRule).toThrowError();
     });
     it('throws an error if the rule type already exists', () => {
       const addRule = () => {
-        ruleManager.registerRule(new ValidRule());
+        ruleManager.registerRule(ValidRule);
       };
       expect(addRule).not.toThrowError();
       expect(addRule).toThrowError();
     });
+
+    it('throws an error if passed rule is not a class', () => {
+      const addRule = () => {
+        ruleManager.registerRule(new ValidRule());
+      };
+      expect(addRule).toThrowError();
+    });
     it('returns the validation manager to allow chaining', () => {
-      const ret = ruleManager.registerRule(new ValidRule());
+      const ret = ruleManager.registerRule(ValidRule);
       expect(ret).toBe(ruleManager);
     });
   });

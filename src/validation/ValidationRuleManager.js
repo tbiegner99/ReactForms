@@ -30,7 +30,8 @@ export class ValidationRuleManager {
 
   registerRule(rule) {
     Assert.toNotBeNullOrUndefined(rule, 'Cannot register null rule');
-    Assert.toBeInstanceOf(rule, Rule, 'Rule must be of type Rule');
+    Assert.toBeFunction(rule, 'expected class to be passed');
+    Assert.toBeInstanceOf(rule.prototype, Rule, 'Rule must be of type Rule');
     Assert.thatNot(
       this.doesRuleExst(rule.name),
       `Rule already exists. Please deregister the existing rule with the name ${rule.name} first`
