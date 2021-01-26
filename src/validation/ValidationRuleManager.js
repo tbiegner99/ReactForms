@@ -33,11 +33,11 @@ export class ValidationRuleManager {
     Assert.toBeFunction(rule, 'expected class to be passed');
     Assert.toBeInstanceOf(rule.prototype, Rule, 'Rule must be of type Rule');
     Assert.thatNot(
-      this.doesRuleExst(rule.name),
+      this.doesRuleExst(rule.ruleName),
       `Rule already exists. Please deregister the existing rule with the name ${rule.name} first`
     );
-    Assert.toBeTruthy(rule.name, 'A valid name must be supplied for rule');
-    this[_registeredRules][rule.name] = rule;
+    Assert.toBeTruthy(rule.ruleName, 'A valid name must be supplied for rule');
+    this[_registeredRules][rule.ruleName] = rule;
 
     return this;
   }

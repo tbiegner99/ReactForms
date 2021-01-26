@@ -2,14 +2,14 @@ import { ValidationRuleManager } from '../../../src/validation/ValidationRuleMan
 import Rule from '../../../src/validation/Rule';
 
 const InvalidRule = class extends Rule {
-  static get name() {
+  static get ruleName() {
     return '';
   }
 };
 
 const ValidRule = class extends Rule {
-  static get name() {
-    return 'ruleA';
+  static get ruleName() {
+    return 'rule-a';
   }
 };
 export default () => {
@@ -56,6 +56,7 @@ export default () => {
     it('returns the validation manager to allow chaining', () => {
       const ret = ruleManager.registerRule(ValidRule);
       expect(ret).toBe(ruleManager);
+      expect(ruleManager.rules['rule-a']).toEqual(ValidRule);
     });
   });
 };
