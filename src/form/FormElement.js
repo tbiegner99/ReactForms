@@ -99,12 +99,12 @@ export default class FormElement extends React.Component {
     return false;
   }
 
-  get canRenderErrors() {
+  get shouldRenderErrors() {
     return this.state.showErrors;
   }
 
   get showErrors() {
-    return !this.props.hideErrors && this.canRenderErrors && !this.state.ignoreErrorRendering;
+    return !this.props.hideErrors && this.shouldRenderErrors && !this.state.ignoreErrorRendering;
   }
 
   get isValid() {
