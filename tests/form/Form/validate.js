@@ -43,6 +43,13 @@ export default () => {
               valid: false,
               isForm: false,
               ruleName: 'required',
+              results: [
+                {
+                  message: 'Field is required.',
+                  ruleName: 'required',
+                  valid: false
+                }
+              ],
               uniqueId: 0,
               numberOfInvalidElements: 1,
               numberOfRulesViolated: 1,
@@ -66,6 +73,12 @@ export default () => {
               valid: true,
               numberOfInvalidElements: 0,
               numberOfRulesViolated: 0,
+              results: [
+                {
+                  ruleName: 'required',
+                  valid: true
+                }
+              ],
               ruleName: null,
               uniqueId: 0,
               isForm: false,
@@ -143,6 +156,12 @@ export default () => {
                 message: null,
                 isForm: false,
                 numberOfRulesViolated: 0,
+                results: [
+                  {
+                    ruleName: 'required',
+                    valid: true
+                  }
+                ],
                 ruleName: null,
                 uniqueId: 0,
                 name: 'el1'
@@ -152,6 +171,12 @@ export default () => {
                 numberOfInvalidElements: 0,
                 message: null,
                 isForm: false,
+                results: [
+                  {
+                    ruleName: 'required',
+                    valid: true
+                  }
+                ],
                 numberOfRulesViolated: 0,
                 ruleName: null,
                 uniqueId: 2,
@@ -188,6 +213,12 @@ export default () => {
               numberOfInvalidElements: 0,
               message: null,
               numberOfRulesViolated: 0,
+              results: [
+                {
+                  ruleName: 'required',
+                  valid: true
+                }
+              ],
               ruleName: null,
               uniqueId: 0,
               isForm: false,
@@ -197,6 +228,13 @@ export default () => {
               valid: false,
               numberOfInvalidElements: 1,
               message: 'Rule violated for value A - number',
+              results: [
+                {
+                  message: 'Rule violated for value A - number',
+                  ruleName: 'number',
+                  valid: false
+                }
+              ],
               numberOfRulesViolated: 1,
               ruleName: 'number',
               uniqueId: 2,
@@ -245,6 +283,13 @@ export default () => {
                     valid: false,
                     numberOfInvalidElements: 1,
                     message: 'Field is required.',
+                    results: [
+                      {
+                        message: 'Field is required.',
+                        ruleName: 'required',
+                        valid: false
+                      }
+                    ],
                     numberOfRulesViolated: 1,
                     name: 'sf1.el1',
                     ruleName: 'required',
@@ -255,6 +300,13 @@ export default () => {
                     valid: false,
                     numberOfInvalidElements: 1,
                     message: 'Field is required.',
+                    results: [
+                      {
+                        message: 'Field is required.',
+                        ruleName: 'required',
+                        valid: false
+                      }
+                    ],
                     numberOfRulesViolated: 1,
                     name: 'sf1.el2',
                     uniqueId: 1,
@@ -268,6 +320,12 @@ export default () => {
                 numberOfInvalidElements: 0,
                 message: null,
                 isForm: false,
+                results: [
+                  {
+                    ruleName: 'required',
+                    valid: true
+                  }
+                ],
                 ruleName: null,
                 uniqueId: 2,
                 numberOfRulesViolated: 0,

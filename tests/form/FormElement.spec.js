@@ -358,6 +358,12 @@ describe('Form Element Component', () => {
           message: null,
           name: undefined,
           uniqueId: null,
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            }
+          ],
           isForm: false,
           ruleName: null,
           numberOfInvalidElements: 0,
@@ -372,6 +378,13 @@ describe('Form Element Component', () => {
           isForm: false,
           uniqueId: null,
           name: 'element',
+          results: [
+            {
+              message: 'Field is required.',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           ruleName: 'required',
           message: 'Field is required.',
           numberOfInvalidElements: 1,
@@ -402,6 +415,13 @@ describe('Form Element Component', () => {
           isForm: false,
           name: 'element',
           uniqueId: 0,
+          results: [
+            {
+              message: 'Field is required.',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           ruleName: 'required',
           message: 'Field is required.',
           numberOfInvalidElements: 1,
@@ -417,6 +437,12 @@ describe('Form Element Component', () => {
           message: null,
           name: 'element',
           isForm: false,
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            }
+          ],
           uniqueId: 0,
           ruleName: null,
           numberOfInvalidElements: 0,
@@ -446,6 +472,13 @@ describe('Form Element Component', () => {
           isForm: false,
           name: undefined,
           uniqueId: 0,
+          results: [
+            {
+              message: 'Field is required.',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           ruleName: 'required',
           message: 'Field is required.',
           numberOfInvalidElements: 1,
@@ -467,6 +500,13 @@ describe('Form Element Component', () => {
           valid: false,
           isForm: false,
           uniqueId: null,
+          results: [
+            {
+              message: 'Field is required.',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           ruleName: 'required',
           message: 'Field is required.',
           numberOfInvalidElements: 1,
@@ -485,6 +525,13 @@ describe('Form Element Component', () => {
           isForm: false,
           uniqueId: null,
           ruleName: 'required',
+          results: [
+            {
+              message: 'Field is required.',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           message: 'Field is required.',
           numberOfInvalidElements: 1,
           numberOfRulesViolated: 1

@@ -8,7 +8,7 @@ const wrapRuleEvaluationInPromiseToEnforceAllRuleExecution = async (config, valu
   const ruleName = config.name || config.rule.ruleName;
   try {
     await config.rule.validate(value, formValues);
-    return { ruleName, isValid: true };
+    return { ruleName, valid: true };
   } catch (err) {
     let { message } = config;
     if (typeof message === 'function') {
@@ -23,13 +23,14 @@ const wrapRuleEvaluationInPromiseToEnforceAllRuleExecution = async (config, valu
   }
 };
 const combineErrors = (errs) => {
-  const rulesViolated = errs.filter((err) => !err.isValid);
+  const rulesViolated = errs.filter((err) => !err.valid);
   const numberOfRulesViolated = rulesViolated.length;
   const isAllValid = numberOfRulesViolated === 0;
   return {
     valid: isAllValid,
     message: isAllValid ? null : rulesViolated[0].message,
     ruleName: isAllValid ? null : rulesViolated[0].ruleName,
+    results: errs,
     numberOfRulesViolated,
     numberOfInvalidElements: isAllValid ? 0 : 1
   };

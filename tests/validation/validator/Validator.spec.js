@@ -39,6 +39,12 @@ describe('Validator', () => {
         expect(result).toEqual({
           numberOfInvalidElements: 0,
           valid: true,
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            }
+          ],
           message: null,
           ruleName: null,
           numberOfRulesViolated: 0
@@ -59,6 +65,13 @@ describe('Validator', () => {
           expect(err).toEqual({
             numberOfInvalidElements: 1,
             valid: false,
+            results: [
+              {
+                message: 'This is required',
+                ruleName: 'required',
+                valid: false
+              }
+            ],
             message: 'This is required',
             ruleName: 'required',
             numberOfRulesViolated: 1
@@ -82,6 +95,13 @@ describe('Validator', () => {
           expect(err).toEqual({
             numberOfInvalidElements: 1,
             valid: false,
+            results: [
+              {
+                message: 'ABC is not a number',
+                ruleName: 'number',
+                valid: false
+              }
+            ],
             message: 'ABC is not a number',
             ruleName: 'number',
             numberOfRulesViolated: 1
@@ -107,6 +127,18 @@ describe('Validator', () => {
         return expect(Validator.validate('', ruleConfig)).rejects.toEqual({
           numberOfInvalidElements: 1,
           valid: false,
+          results: [
+            {
+              message: 'This is required',
+              ruleName: 'required',
+              valid: false
+            },
+            {
+              message: 'This is a reject rule',
+              ruleName: 'slow-reject',
+              valid: false
+            }
+          ],
           message: 'This is required',
           ruleName: 'required',
           numberOfRulesViolated: 2
@@ -131,6 +163,17 @@ describe('Validator', () => {
           numberOfInvalidElements: 1,
           valid: false,
           ruleName: 'custom-name',
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            },
+            {
+              message: 'This is a reject rule',
+              ruleName: 'custom-name',
+              valid: false
+            }
+          ],
           message: 'This is a reject rule',
           numberOfRulesViolated: 1
         });
@@ -153,6 +196,18 @@ describe('Validator', () => {
           numberOfInvalidElements: 1,
           valid: false,
           ruleName: 'slow-reject',
+          results: [
+            {
+              message: 'This is a reject rule',
+              ruleName: 'slow-reject',
+              valid: false
+            },
+            {
+              message: 'This is required',
+              ruleName: 'required',
+              valid: false
+            }
+          ],
           message: 'This is a reject rule',
           numberOfRulesViolated: 2
         });
@@ -178,13 +233,20 @@ describe('Validator', () => {
           {
             rule: new RequiredRule(),
             message: 'This is a reject rule',
-            priority: 1
+            priority: 1,
+            name: 'rule2'
           }
         ];
         return expect(Validator.validate('a', ruleConfig)).resolves.toEqual({
           numberOfInvalidElements: 0,
           valid: true,
           message: null,
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            }
+          ],
           ruleName: null,
           numberOfRulesViolated: 0
         });
@@ -195,7 +257,7 @@ describe('Validator', () => {
             rule: new RequiredRule(),
             message: 'This is required',
             priority: 0,
-            name: 'CustomName'
+            name: 'custom-name'
           },
           {
             rule: new SlowRejectRule(),
@@ -207,8 +269,9 @@ describe('Validator', () => {
           numberOfInvalidElements: 1,
           valid: false,
           message: 'This is required',
+          results: [{ message: 'This is required', valid: false, ruleName: 'custom-name' }],
           numberOfRulesViolated: 1,
-          ruleName: 'CustomName'
+          ruleName: 'custom-name'
         });
         expect(slowRule.validate).not.toBeCalled();
       });
