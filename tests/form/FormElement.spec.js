@@ -370,6 +370,33 @@ describe('Form Element Component', () => {
           numberOfRulesViolated: 0
         });
       });
+      it('returns resolved promise when validation succeeds for multiple rules', async () => {
+        const elJsx = mount(
+          <ExampleFormElement required data-rule-length-range={[2, 5]} value="abc" />
+        );
+        const el = elJsx.instance();
+        const result = await el.validate({ showErrors: true });
+        expect(result).toEqual({
+          valid: true,
+          message: null,
+          name: undefined,
+          uniqueId: null,
+          results: [
+            {
+              ruleName: 'required',
+              valid: true
+            },
+            {
+              ruleName: 'length-range',
+              valid: true
+            }
+          ],
+          isForm: false,
+          ruleName: null,
+          numberOfInvalidElements: 0,
+          numberOfRulesViolated: 0
+        });
+      });
       it('returns rejected promise when validation fails', async () => {
         const elJsx = mount(<ExampleFormElement name="element" required value={null} />);
         const el = elJsx.instance();

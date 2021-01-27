@@ -245,6 +245,10 @@ describe('Validator', () => {
             {
               ruleName: 'required',
               valid: true
+            },
+            {
+              ruleName: 'rule2',
+              valid: true
             }
           ],
           ruleName: null,

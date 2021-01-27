@@ -50,6 +50,14 @@ const evaluateRuleSet = async (value, formValues, ruleSet) => {
   return errObject;
 };
 
+const combineResults = (objects) => {
+  let result = [];
+  objects.forEach((obj) => {
+    result = result.concat(obj.results);
+  });
+  return result;
+};
+
 const executeRuleSets = async (ruleSetsPromiseArray) => {
   if (!ruleSetsPromiseArray.length) {
     return {
@@ -61,7 +69,10 @@ const executeRuleSets = async (ruleSetsPromiseArray) => {
     };
   }
   const successObjects = await Promise.all(ruleSetsPromiseArray);
-  return successObjects[0];
+  debugger; //eslint-disable-line
+  return Object.assign(successObjects[0], {
+    results: combineResults(successObjects)
+  });
 };
 
 const validate = (value, config = [], formValues = {}) => {

@@ -77,6 +77,10 @@ export default () => {
                 {
                   ruleName: 'required',
                   valid: true
+                },
+                {
+                  ruleName: 'number',
+                  valid: true
                 }
               ],
               ruleName: null,
@@ -174,6 +178,10 @@ export default () => {
                 results: [
                   {
                     ruleName: 'required',
+                    valid: true
+                  },
+                  {
+                    ruleName: 'number',
                     valid: true
                   }
                 ],
@@ -323,6 +331,10 @@ export default () => {
                 results: [
                   {
                     ruleName: 'required',
+                    valid: true
+                  },
+                  {
+                    ruleName: 'number',
                     valid: true
                   }
                 ],
