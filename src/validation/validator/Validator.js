@@ -69,7 +69,6 @@ const executeRuleSets = async (ruleSetsPromiseArray) => {
     };
   }
   const successObjects = await Promise.all(ruleSetsPromiseArray);
-  debugger; //eslint-disable-line
   return Object.assign(successObjects[0], {
     results: combineResults(successObjects)
   });
