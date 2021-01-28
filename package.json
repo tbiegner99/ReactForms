@@ -3,6 +3,7 @@
   "version": "1.0.10",
   "description": "A component utility library for react",
   "module": "./build/esm/index.esm.js",
+  "main": "./build/cjs/index.cjs.js",
   "type": "module",
   "directories": {
     "test": "tests"
