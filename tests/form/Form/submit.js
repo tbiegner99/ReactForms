@@ -107,8 +107,13 @@ export default () => {
       it('invokes pre submit event even if validation fails', async () => {
         const submitSpy = jest.fn();
         const beforeSubmitSpy = jest.fn();
+        const submissionFailSpy = jest.fn();
         const formJsx = (
-          <Form onSubmit={submitSpy} onBeforeSubmit={beforeSubmitSpy}>
+          <Form
+            onSubmit={submitSpy}
+            onSubmissionFailure={submissionFailSpy}
+            onBeforeSubmit={beforeSubmitSpy}
+          >
             <MockFormElement name="el" value={3} />
           </Form>
         );
@@ -117,19 +122,20 @@ export default () => {
           const err = { valid: false };
           throw err;
         });
-
-        const result = await form.instance().submit();
-
+        const formInstance = form.instance();
+        const result = await formInstance.submit();
+        const formValue = { el: 3 };
         const expectResult = {
           success: false,
           validationResult: { valid: false },
           message: 'Validation failed',
-          value: { el: 3 }
+          value: formValue
         };
 
         expect(validateSpy).toHaveBeenCalled();
         expect(submitSpy).not.toHaveBeenCalled();
         expect(beforeSubmitSpy).toHaveBeenCalled();
+        expect(submissionFailSpy).toHaveBeenCalled();
         expect(result).toEqual(expectResult);
       });
       it('should cancel submission if presubmit returns rejected promise', async () => {
@@ -232,15 +238,20 @@ export default () => {
           const err = { valid: false };
           throw err;
         });
-        await form.instance().submit();
+        const instance = form.instance();
+        await instance.submit();
 
         expect(validateSpy).toHaveBeenCalled();
-        expect(submitFailSpy).toHaveBeenCalledWith({
-          success: false,
-          validationResult: { valid: false },
-          message: 'Validation failed',
-          value: { el: 3 }
-        });
+        expect(submitFailSpy).toHaveBeenCalledWith(
+          {
+            success: false,
+            validationResult: { valid: false },
+            message: 'Validation failed',
+            value: { el: 3 }
+          },
+          { el: 3 },
+          instance
+        );
       });
     });
   });

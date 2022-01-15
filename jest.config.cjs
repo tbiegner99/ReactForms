@@ -1,5 +1,6 @@
 module.exports = {
   verbose: true,
+  testEnvironment: 'jsdom',
   testMatch: ['**/tests/**/*.spec.js'],
   collectCoverageFrom: ['**/src/**/*.js'],
   setupFiles: ['./tests/init.js'],

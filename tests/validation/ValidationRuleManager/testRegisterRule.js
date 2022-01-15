@@ -58,5 +58,18 @@ export default () => {
       expect(ret).toBe(ruleManager);
       expect(ruleManager.rules['rule-a']).toEqual(ValidRule);
     });
+    describe('unregister rule', () => {
+      it('does not fail if rule does not exsist', () => {
+        expect(ruleManager.rules['rule-a']).toBeUndefined();
+        ruleManager.deregisterRule(ValidRule);
+        expect(ruleManager.rules['rule-a']).toBeUndefined();
+      });
+      it('removes rule if rule does  exsist', () => {
+        ruleManager.registerRule(ValidRule);
+        expect(ruleManager.rules['rule-a']).toEqual(ValidRule);
+        ruleManager.deregisterRule(ValidRule);
+        expect(ruleManager.rules['rule-a']).toBeUndefined();
+      });
+    });
   });
 };

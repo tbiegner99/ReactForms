@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FormElement from './FormElement';
-import { ResolveFunction } from '../utils/CommonFunctions';
+import { ResolveFunction, NoOperation } from '../utils/CommonFunctions';
 import ValueEnforcer from '../utils/ValueEnforcer';
 import ErrorLabel from './elements/ErrorLabel';
 import ArrayUtilities from '../utils/ArrayUtilities';
@@ -20,12 +20,18 @@ export default class Form extends FormElement {
 
   static propTypes = {
     ...FormElement.propTypes,
-    onSubmitAttempt: PropTypes.func
+    onSubmit: PropTypes.func.required,
+    onBeforeSubmit: PropTypes.func,
+    onSubmissionFailure: PropTypes.func,
+    native: PropTypes.bool
   };
 
   static defaultProps = {
     ...FormElement.defaultProps,
-    onSubmitAttempt: ResolveFunction
+    onValidationFinished: NoOperation,
+    onBeforeSubmit: ResolveFunction,
+    onSubmissionFailure: ResolveFunction,
+    native: true
   };
 
   constructor(props) {
@@ -93,7 +99,7 @@ export default class Form extends FormElement {
   }
 
   notifyElementValidationState(element, validationResults, showErrors) {
-    const { onValidationStateChange } = this.props;
+    const { onValidationStateChange, onValidationFinished } = this.props;
     let validationState = this[_validationState];
     const isCurrentValid = validationState.valid;
     validationState = this._addElementToValidationResults(
@@ -105,8 +111,11 @@ export default class Form extends FormElement {
     if (showErrors) {
       this.handleElementValidationFailures([validationResults]);
     }
-    if (validationState.valid !== isCurrentValid) {
+    if (validationState.valid !== isCurrentValid && typeof onValidationStateChange === 'function') {
       onValidationStateChange(validationState.valid, this, validationState);
+    }
+    if (typeof onValidationFinished === 'function') {
+      onValidationFinished(validationState, this);
     }
   }
 
@@ -256,7 +265,7 @@ export default class Form extends FormElement {
     return Boolean(this.getLabelForElement(elementName));
   }
 
-  clearErrorMessages(result, containingForm=this) {
+  clearErrorMessages(result, containingForm = this) {
     const { name, uniqueId, isForm } = result;
 
     if (this.hasLabelForElement(name)) {
@@ -315,7 +324,7 @@ export default class Form extends FormElement {
       let beforeSubmitResult;
       try {
         if (typeof onBeforeSubmit !== 'function') return;
-        beforeSubmitResult = await onBeforeSubmit(chainStatus.validationResult);
+        beforeSubmitResult = await onBeforeSubmit(chainStatus.validationResult, formValue, this);
       } catch (e) {
         chainStatus.message = 'Presubmit failed';
         chainStatus.details = e;
@@ -360,9 +369,8 @@ export default class Form extends FormElement {
       await doSubmit();
       return chainStatus;
     } catch (failure) {
-      if (typeof onSubmissionFailure === 'function') {
-        onSubmissionFailure(failure);
-      }
+      onSubmissionFailure(failure, formValue, this);
+
       return failure;
     }
   }

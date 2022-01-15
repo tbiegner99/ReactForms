@@ -36,7 +36,7 @@ describe('TextInput Tests', () => {
     let onChangeMock;
     beforeEach(() => {
       el = mount(<TextInput />).instance();
-      setStateMock = jest.spyOn(el, 'setState').mockReturnValue(Promise.resolve({ value: 'abc' }));
+      setStateMock = jest.spyOn(el, 'setState').mockResolvedValue({ value: 'abc' });
       onChangeMock = jest.spyOn(el, 'onChange');
       el.onInputChange('abc');
     });
@@ -55,9 +55,7 @@ describe('TextInput Tests', () => {
     beforeEach(() => {
       el = mount(<TextInput defaultValue="a" />);
       elInstance = el.instance();
-      setStateMock = jest
-        .spyOn(elInstance, 'setState')
-        .mockReturnValue(Promise.resolve({ value: 'abc' }));
+      setStateMock = jest.spyOn(elInstance, 'setState').mockResolvedValue({ value: 'abc' });
       jest.resetAllMocks();
     });
     it('sets the value if the value prop changes', () => {
@@ -77,7 +75,7 @@ describe('TextInput Tests', () => {
     let onBlurMock;
     beforeEach(() => {
       el = mount(<TextInput />).instance();
-      setStateMock = jest.spyOn(el, 'setState').mockReturnValue(Promise.resolve({ value: 'abc' }));
+      setStateMock = jest.spyOn(el, 'setState').mockResolvedValue({ value: 'abc' });
       onBlurMock = jest.spyOn(el, 'onBlur');
       el.onInputBlur();
     });

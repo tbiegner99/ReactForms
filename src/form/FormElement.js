@@ -238,10 +238,11 @@ export default class FormElement extends React.Component {
   }
 
   _raiseValidationStateChangeEvent(validationStateChange, validationResults) {
-    if (validationStateChange) {
-      this.props.onValidationStateChange(validationResults.valid, this, validationResults);
+    const { onValidationStateChange, onValidationFinished } = this.props;
+    if (validationStateChange && typeof onValidationStateChange === 'function') {
+      onValidationStateChange(validationResults.valid, this, validationResults);
     }
-    this.props.onValidationFinished(validationResults);
+    onValidationFinished(validationResults, this);
   }
 
   _registerSelf() {

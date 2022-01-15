@@ -28,6 +28,12 @@ export class ValidationRuleManager {
     return !!this[_registeredRules][ruleName];
   }
 
+  deregisterRule(rule) {
+    if (this.doesRuleExst(rule.ruleName)) {
+      delete this[_registeredRules][rule.ruleName];
+    }
+  }
+
   registerRule(rule) {
     Assert.toNotBeNullOrUndefined(rule, 'Cannot register null rule');
     Assert.toBeFunction(rule, 'expected class to be passed');
