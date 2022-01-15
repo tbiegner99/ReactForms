@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { ValidationRuleManager } from '../../../src/validation/ValidationRuleManager';
 import Rule from '../../../src/validation/Rule';
 

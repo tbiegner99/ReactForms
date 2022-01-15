@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import ObjectUtilities from '../utils/ObjectUtilities';
 import ValueEnforcer from '../utils/ValueEnforcer';
 import Rule from './Rule';
@@ -16,11 +17,11 @@ const _registeredRules = Symbol('registeredRules');
 export class ValidationRuleManager {
   constructor() {
     privates = new PrivateFunctions(this);
-    this[_registeredRules] = Object.assign({}, BuiltInRules);
+    this[_registeredRules] = { ...BuiltInRules };
   }
 
   get rules() {
-    const rulesCopy = Object.assign({}, this[_registeredRules]);
+    const rulesCopy = { ...this[_registeredRules] };
     return Object.freeze(rulesCopy);
   }
 
@@ -70,18 +71,16 @@ export class ValidationRuleManager {
         rule,
         message: rule.getDefaultMessage,
         priority: rule.defaultPriority,
-        name: rule.constructor.ruleName
+        name: rule.constructor.ruleName,
       };
     }
 
-    return Object.assign(
-      {
-        message: rule.rule.getDefaultMessage,
-        priority: rule.rule.defaultPriority,
-        name: rule.rule.constructor.ruleName
-      },
-      rule
-    );
+    return {
+      message: rule.rule.getDefaultMessage,
+      priority: rule.rule.defaultPriority,
+      name: rule.rule.constructor.ruleName,
+      ...rule,
+    };
   }
 
   validateRuleConfiguration(config) {
@@ -152,7 +151,7 @@ export class ValidationRuleManager {
           defaultMessage
         ),
         priority: ValueEnforcer.toBeNumber(ruleConfig.priority, defaultPriority),
-        name: ruleName
+        name: ruleName,
       };
     });
     ruleObjects.sort(privates.sortByPriority);

@@ -45,8 +45,8 @@ describe('Button Tests', () => {
       group = mount(<InputGroup />).instance();
       submitButton = mount(<Button value={6} name="btn" />, {
         context: {
-          inputGroup: group
-        }
+          inputGroup: group,
+        },
       });
       buttonInstance = submitButton.instance();
       jest.spyOn(buttonInstance, 'select').mockResolvedValue();
@@ -72,7 +72,9 @@ describe('Button Tests', () => {
 
     it('submits form onClick', async () => {
       wrapper.find('button').simulate('click');
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
       expect(submit).toHaveBeenCalled();
     });
   });
@@ -96,8 +98,8 @@ describe('Button Tests', () => {
         submitButton = mount(<Button submittable onClick={() => 0} value={6} name="btn" />, {
           context: {
             rootForm: buttonForm,
-            parentForm: buttonForm
-          }
+            parentForm: buttonForm,
+          },
         });
         buttonInstance = submitButton.instance();
       });
@@ -106,8 +108,8 @@ describe('Button Tests', () => {
         submitButton = mount(<Button onClick={() => false} submittable value="me" name="btn" />, {
           context: {
             rootForm: buttonForm,
-            parentForm: buttonForm
-          }
+            parentForm: buttonForm,
+          },
         });
         buttonInstance = submitButton.instance();
 
@@ -127,8 +129,8 @@ describe('Button Tests', () => {
       it('does not submit form without root form', async () => {
         submitButton = mount(<Button onClick={() => false} submittable value="me" name="btn" />, {
           context: {
-            parentForm: buttonForm
-          }
+            parentForm: buttonForm,
+          },
         });
         buttonInstance = submitButton.instance();
 
@@ -137,7 +139,7 @@ describe('Button Tests', () => {
       });
       it('does not submit form if button is not submittable', async () => {
         submitButton = mount(<Button value="me" name="btn" />, {
-          context: {}
+          context: {},
         });
         buttonInstance = submitButton.instance();
 

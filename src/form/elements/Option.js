@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-class-component-methods */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NoOperation } from '../../utils/CommonFunctions';
@@ -8,7 +9,7 @@ class Option extends React.Component {
     className: PropTypes.string,
     text: PropTypes.node,
     value: PropTypes.any,
-    children: PropTypes.node
+    children: PropTypes.node,
   };
 
   static defaultProps = {
@@ -16,7 +17,7 @@ class Option extends React.Component {
     children: null,
     text: null,
     className: '',
-    onOptionSelect: NoOperation
+    onOptionSelect: NoOperation,
   };
 
   static getValueFromProps(props) {
@@ -24,11 +25,13 @@ class Option extends React.Component {
   }
 
   get className() {
-    return this.props.className;
+    const { className } = this.props;
+    return className;
   }
 
   get text() {
-    return typeof this.props.text !== 'string' ? this.props.value : this.props.text;
+    const { text, value } = this.props;
+    return typeof text !== 'string' ? value : text;
   }
 
   get value() {

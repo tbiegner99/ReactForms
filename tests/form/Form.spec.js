@@ -10,14 +10,6 @@ import testElementRegistration from './Form/elementRegistration';
 import testValidate from './Form/validate';
 import testUnregistration from './Form/elementUnregistration';
 
-export default class MockFormElement extends FormElement {
-  get value() {
-    const value =
-      typeof this.props.value === 'undefined' ? { name: 'myVal', value: 2 } : this.props.value;
-    return value;
-  }
-}
-
 describe('Form', () => {
   it('is a react component', () => {
     expect(new Form()).toBeInstanceOf(React.Component);
@@ -38,20 +30,20 @@ describe('Form', () => {
         const elInstance = el.instance();
         expect(elInstance.getChildContext()).toEqual({
           parentForm: elInstance,
-          rootForm: elInstance
+          rootForm: elInstance,
         });
       });
       it('passes the root form when it is nested', () => {
         el = mount(<Form name="nestedForm" />, {
           context: {
             rootForm,
-            parentForm: rootForm
-          }
+            parentForm: rootForm,
+          },
         });
         const elInstance = el.instance();
         expect(elInstance.getChildContext()).toEqual({
           parentForm: elInstance,
-          rootForm
+          rootForm,
         });
       });
     });

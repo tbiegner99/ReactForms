@@ -8,7 +8,7 @@ import Option from './Option';
 
 const SelectBoxStyles = {
   position: 'relative',
-  background: 'white'
+  background: 'white',
 };
 
 const OptionBoxStyles = {
@@ -17,15 +17,15 @@ const OptionBoxStyles = {
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '10px 20px',
-  cursor: 'pointer'
+  cursor: 'pointer',
 };
 
 const SelectOptionStyles = {
   cursor: 'pointer',
   padding: '10px',
   ':hover': {
-    background: '#777'
-  }
+    background: '#777',
+  },
 };
 
 const getOptionsStyles = (closed) => ({
@@ -37,24 +37,27 @@ const getOptionsStyles = (closed) => ({
   width: '100%',
   borderStyle: 'solid',
   borderWidth: '0 1px 1px 1px',
-  background: 'inherit'
+  background: 'inherit',
 });
 
 const getArrowStyles = (closed) => ({
   transformOrigin: 'center',
   transform: `rotate(${closed ? 180 : 0}deg)`,
-  transition: 'all .25s ease-in-out'
+  transition: 'all .25s ease-in-out',
 });
 
-const ArrowIcon = (props) => (
-  <svg {...props} viewBox="0 0 10 10" width="10" height="10">
-    <path d="M0 0L10 0L5 10Z" />
-  </svg>
-);
+function ArrowIcon(props) {
+  return (
+    <svg {...props} viewBox="0 0 10 10" width="10" height="10">
+      <path d="M0 0L10 0L5 10Z" />
+    </svg>
+  );
+}
+
 class Select extends FormElement {
   static propTypes = {
     ...FormElement.propTypes,
-    children: PropTypes.node
+    children: PropTypes.node,
   };
 
   constructor(props) {
@@ -130,7 +133,7 @@ class Select extends FormElement {
       style: SelectOptionStyles,
       className: newClassName,
       onOptionSelect: (option) => this.selectOption(option),
-      selected: selectChild
+      selected: selectChild,
     });
   }
 

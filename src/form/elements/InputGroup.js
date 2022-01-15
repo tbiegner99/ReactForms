@@ -8,16 +8,16 @@ const _uniqueId = Symbol('uniqueId');
 export default class InputGroup extends GroupableElement {
   static defaultProps = {
     ...GroupableElement.defaultProps,
-    multiValue: false
+    multiValue: false,
   };
 
   static propTypes = {
     ...GroupableElement.propTypes,
-    multiValue: PropTypes.bool
+    multiValue: PropTypes.bool,
   };
 
   static childContextTypes = {
-    inputGroup: PropTypes.instanceOf(GroupableElement)
+    inputGroup: PropTypes.instanceOf(GroupableElement),
   };
 
   constructor(props) {
@@ -32,7 +32,7 @@ export default class InputGroup extends GroupableElement {
   }
 
   get selectedElements() {
-    return Object.assign({}, this[_selectedElements]);
+    return { ...this[_selectedElements] };
   }
 
   get multiValue() {
@@ -101,7 +101,7 @@ export default class InputGroup extends GroupableElement {
 
   getChildContext() {
     return {
-      inputGroup: this
+      inputGroup: this,
     };
   }
 

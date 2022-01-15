@@ -15,7 +15,9 @@ export default () => {
       expect(typeof ObjectUtils.map).toEqual('function');
     });
     it('throws an error if no object supplied', () => {
-      expect(ObjectUtils.map.bind(this)).toThrowError('Object to map must be supplied as first argument');
+      expect(ObjectUtils.map.bind(this)).toThrowError(
+        'Object to map must be supplied as first argument'
+      );
     });
     it('throws an error if object is not an object', () => {
       expect(ObjectUtils.map.bind(this, 4)).toThrowError('First argument must be an object');
@@ -35,7 +37,7 @@ export default () => {
         3: 'b',
         4: 789,
       };
-      expect(ObjectUtils.map(subject, key => parseInt(key, 10) + 1)).toEqual(expected);
+      expect(ObjectUtils.map(subject, (key) => parseInt(key, 10) + 1)).toEqual(expected);
       expect(ObjectUtils.map(subject)).not.toBe(subject);
     });
     it('skips keys that map to null or undefined according to key function', () => {
@@ -51,7 +53,7 @@ export default () => {
         let numKey = parseInt(key, 10);
         numKey -= 2;
         if (numKey < 0) return undefined;
-        else if (numKey === 0) return null;
+        if (numKey === 0) return null;
         return 0;
       };
       expect(ObjectUtils.map(subject, keyFunc)).toEqual(expected);
@@ -71,7 +73,7 @@ export default () => {
         let numKey = parseInt(key, 10);
         numKey -= 2;
         if (numKey < 0) return undefined;
-        else if (numKey === 0) return null;
+        if (numKey === 0) return null;
         return `${value}a`;
       };
       expect(ObjectUtils.map(subject, undefined, valueFunc)).toEqual(expected);

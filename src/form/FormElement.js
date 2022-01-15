@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-class-component-methods */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ValidationManager from '../validation/ValidationRuleManager';
@@ -15,12 +16,12 @@ export default class FormElement extends React.Component {
     onValidationFinished: PropTypes.func,
     onValidationStateChange: PropTypes.func,
     onChange: PropTypes.func,
-    onBlur: PropTypes.func
+    onBlur: PropTypes.func,
   };
 
   static contextTypes = {
     parentForm: PropTypes.instanceOf(FormElement),
-    rootForm: PropTypes.instanceOf(FormElement)
+    rootForm: PropTypes.instanceOf(FormElement),
   };
 
   static defaultProps = {
@@ -33,7 +34,7 @@ export default class FormElement extends React.Component {
     onValidationFinished: NoOperation,
     onValidationStateChange: NoOperation,
     onChange: NoOperation,
-    onBlur: NoOperation
+    onBlur: NoOperation,
   };
 
   constructor(props) {
@@ -41,7 +42,7 @@ export default class FormElement extends React.Component {
     this.state = {
       showErrors: false,
       valid: undefined,
-      validationResults: null
+      validationResults: null,
     };
     this.mounted = false;
     this.unmounted = false;
@@ -78,9 +79,11 @@ export default class FormElement extends React.Component {
   }
 
   get validateOnChange() {
-    if (typeof this.props.validateOnChange === 'boolean') {
-      return this.props.validateOnChange;
-    } else if (this.parentForm) {
+    const { validateOnChange } = this.props;
+    if (typeof validateOnChange === 'boolean') {
+      return validateOnChange;
+    }
+    if (this.parentForm) {
       return this.parentForm.validateOnChange;
     }
     return false;
@@ -91,40 +94,50 @@ export default class FormElement extends React.Component {
   }
 
   get validateOnBlur() {
-    if (typeof this.props.validateOnBlur === 'boolean') {
-      return this.props.validateOnBlur;
-    } else if (this.parentForm) {
+    const { validateOnBlur } = this.props;
+    if (typeof validateOnBlur === 'boolean') {
+      return validateOnBlur;
+    }
+    if (this.parentForm) {
       return this.parentForm.validateOnBlur;
     }
     return false;
   }
 
   get shouldRenderErrors() {
-    return this.state.showErrors;
+    const { showErrors } = this.state;
+    return showErrors;
   }
 
   get showErrors() {
-    return !this.props.hideErrors && this.shouldRenderErrors && !this.state.ignoreErrorRendering;
+    const { hideErrors } = this.props;
+    const { ignoreErrorRendering } = this.state;
+    return !hideErrors && this.shouldRenderErrors && !ignoreErrorRendering;
   }
 
   get isValid() {
-    return this.state.valid;
+    const { valid } = this.state;
+    return valid;
   }
 
   get validationResults() {
-    return this.state.validationResults;
+    const { validationResults } = this.state;
+    return validationResults;
   }
 
   get parentForm() {
+    // eslint-disable-next-line react/destructuring-assignment
     return this.context && this.context.parentForm;
   }
 
   get rootForm() {
+    // eslint-disable-next-line react/destructuring-assignment
     return this.context && this.context.rootForm;
   }
 
   get name() {
-    return this.props.name;
+    const { name } = this.props;
+    return name;
   }
 
   get uniqueId() {
@@ -140,11 +153,12 @@ export default class FormElement extends React.Component {
   }
 
   get submittable() {
-    if (typeof this.props.submittable === 'function') {
-      return !!this.props.submittable(this.value, this);
+    const { submittable } = this.props;
+    if (typeof submittable === 'function') {
+      return !!submittable(this.value, this);
     }
-    if (typeof this.props.submittable === 'boolean') {
-      return this.props.submittable;
+    if (typeof submittable === 'boolean') {
+      return submittable;
     }
     return !!this.name;
   }
@@ -157,14 +171,14 @@ export default class FormElement extends React.Component {
   }
 
   setState(newState, callback) {
-    return new Promise((resolve) =>
+    return new Promise((resolve) => {
       super.setState(newState, () => {
         if (typeof callback === 'function') {
           callback(newState);
         }
         resolve(newState);
-      })
-    );
+      });
+    });
   }
 
   async willMount(componentWillMount) {
@@ -190,15 +204,17 @@ export default class FormElement extends React.Component {
 
   yieldErrorLabelManagement() {
     this.setState({
-      ignoreErrorRendering: true
+      ignoreErrorRendering: true,
     });
   }
 
   async validate(opts) {
+    const { rootForm } = this.context;
+    const { valid } = this.state;
     const options = opts || {};
     let validationOutput;
     try {
-      const formState = this.context.rootForm ? this.context.rootForm.getJsonValue() : {};
+      const formState = rootForm ? rootForm.getJsonValue() : {};
       validationOutput = await ValidationManager.validate(this.value, this.props, formState);
     } catch (failureResults) {
       validationOutput = failureResults;
@@ -206,14 +222,14 @@ export default class FormElement extends React.Component {
     Object.assign(validationOutput, {
       name: this.fullName,
       isForm: false,
-      uniqueId: this.uniqueId
+      uniqueId: this.uniqueId,
     });
     const elementIsValid = validationOutput.valid;
-    const validationStateChange = elementIsValid !== this.state.valid;
+    const validationStateChange = elementIsValid !== valid;
     await this.setState({
       valid: elementIsValid,
       validationResults: validationOutput,
-      showErrors: options.showErrors
+      showErrors: options.showErrors,
     });
 
     const { validationResults } = this.state;
@@ -246,15 +262,17 @@ export default class FormElement extends React.Component {
   }
 
   _registerSelf() {
-    if (this.context.parentForm) {
-      return this.context.parentForm.registerElement(this);
+    const { parentForm } = this.context;
+    if (parentForm) {
+      return parentForm.registerElement(this);
     }
     return null;
   }
 
   _unregisterSelf() {
-    if (this.context.parentForm) {
-      return this.context.parentForm.unregisterElement(this.uniqueId);
+    const { parentForm } = this.context;
+    if (parentForm) {
+      return parentForm.unregisterElement(this.uniqueId);
     }
     return null;
   }

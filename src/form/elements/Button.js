@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React from 'react';
 import combineClasses from 'classnames';
 import PropTypes from 'prop-types';
@@ -8,13 +9,13 @@ export default class Button extends GroupableElement {
   static propTypes = {
     ...GroupableElement.propTypes,
     submittable: PropTypes.bool,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
   };
 
   static defaultProps = {
     ...GroupableElement.defaultProps,
     submittable: false,
-    onClick: NoOperation
+    onClick: NoOperation,
   };
 
   get value() {
@@ -76,4 +77,6 @@ export default class Button extends GroupableElement {
   }
 }
 
-export const SubmitButton = (props) => <Button {...props} submittable />;
+export function SubmitButton(props) {
+  return <Button {...props} submittable />;
+}

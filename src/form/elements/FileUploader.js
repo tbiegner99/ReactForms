@@ -42,7 +42,7 @@ class FileUploader extends HiddenField {
     }
 
     await this.setState({
-      value
+      value,
     });
     if (onChange) {
       onChange(value, files);

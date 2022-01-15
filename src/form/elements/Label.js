@@ -5,21 +5,23 @@ class Label extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     children: PropTypes.node,
-    for: PropTypes.string
+    for: PropTypes.string,
   };
 
   static defaultProps = {
     for: null,
     children: null,
-    className: ''
+    className: '',
   };
 
   get htmlFor() {
+    // eslint-disable-next-line react/destructuring-assignment
     return this.props.for;
   }
 
   get renderedMessage() {
-    return this.props.children;
+    const { children } = this.props;
+    return children;
   }
 
   getRenderableProps(props) {

@@ -46,7 +46,8 @@ export default class MaxRule extends Rule {
   performChecks(value) {
     if (value == null || typeof value === 'undefined') {
       return Promise.resolve();
-    } else if (typeof this.limitArg === 'function') {
+    }
+    if (typeof this.limitArg === 'function') {
       return this.limitArg(value) ? Promise.resolve() : Promise.reject(new InvalidValueError());
     }
 

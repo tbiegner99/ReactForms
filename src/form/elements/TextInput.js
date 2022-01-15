@@ -6,7 +6,7 @@ export default class TextInput extends FormElement {
     super(props);
     this.input = React.createRef();
     this.state = Object.assign(this.state, {
-      value: typeof props.value !== 'undefined' ? props.value : props.defaultValue
+      value: typeof props.value !== 'undefined' ? props.value : props.defaultValue,
     });
   }
 
@@ -14,7 +14,7 @@ export default class TextInput extends FormElement {
     if (prevProps.value !== this.props.value) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        value: this.props.value
+        value: this.props.value,
       });
     }
   }
@@ -31,12 +31,12 @@ export default class TextInput extends FormElement {
     return this.input.current.selectionStart;
   }
 
-  get selectionEnd() {
-    return this.input.current.selectionEnd;
-  }
-
   set selectionStart(selectionStart) {
     this.input.current.selectionStart = selectionStart;
+  }
+
+  get selectionEnd() {
+    return this.input.current.selectionEnd;
   }
 
   set selectionEnd(selectionEnd) {
@@ -67,7 +67,18 @@ export default class TextInput extends FormElement {
   }
 
   render() {
-    const { value, defaultValue, name,onValidationStateChange,validateOnChange,validateOnBlur,submittable, onChange, onBlur, ...otherProps } = this.props;
+    const {
+      value,
+      defaultValue,
+      name,
+      onValidationStateChange,
+      validateOnChange,
+      validateOnBlur,
+      submittable,
+      onChange,
+      onBlur,
+      ...otherProps
+    } = this.props;
 
     return (
       <div>

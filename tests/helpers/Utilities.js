@@ -1,3 +1,6 @@
 export default {
-    wait:  (timeout)=>new Promise(resolve=>setTimeout(resolve,timeout))
-} 
+  wait: (timeout) =>
+    new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    }),
+};

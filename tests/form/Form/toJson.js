@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Form from '../../../src/form/Form';
-import MockFormElement from '../Form.spec';
+import MockFormElement from '../MockFormElement';
 
 export default () => {
   describe('has a function that creates json object containing form values', () => {
@@ -26,19 +26,19 @@ export default () => {
         form.registerElement(
           new MockFormElement({
             name: 'conflictEl',
-            value: 3
+            value: 3,
           })
         );
         form.registerElement(
           new MockFormElement({
             name: 'otherEl',
-            value: false
+            value: false,
           })
         );
         form.registerElement(
           new MockFormElement({
             name: 'nullEl',
-            value: null
+            value: null,
           })
         );
         return form;
@@ -48,38 +48,38 @@ export default () => {
         form.registerElement(
           new MockFormElement({
             name: 'myEl1',
-            value: [3, 4, 5]
+            value: [3, 4, 5],
           })
         );
         form.registerElement(
           new MockFormElement({
-            value: 'shouldSkip'
+            value: 'shouldSkip',
           })
         );
         form.registerElement(
           new MockFormElement({
             name: 'toSkip',
             value: 'shouldSkip',
-            submittable: (value) => value !== 'shouldSkip'
+            submittable: (value) => value !== 'shouldSkip',
           })
         );
         form.registerElement(
           new MockFormElement({
             name: 'objectVal',
-            value: { field: 'ofDreams' }
+            value: { field: 'ofDreams' },
           })
         );
         form.registerElement(createNestedForm());
         form.registerElement(
           new MockFormElement({
             name: 'conflictEl',
-            value: 1
+            value: 1,
           })
         );
         form.registerElement(
           new MockFormElement({
             name: 'conflictEl',
-            value: 'str'
+            value: 'str',
           })
         );
       };
@@ -106,7 +106,7 @@ export default () => {
         expect(val.subForm).toEqual({
           conflictEl: 3,
           otherEl: false,
-          nullEl: null
+          nullEl: null,
         });
       });
 
@@ -119,8 +119,8 @@ export default () => {
           subForm: {
             conflictEl: 3,
             otherEl: false,
-            nullEl: null
-          }
+            nullEl: null,
+          },
         });
       });
     });

@@ -4,7 +4,18 @@ import TextInput from './TextInput';
 
 class TextArea extends TextInput {
   render() {
-    const { value, defaultValue, name,onValidationStateChange,validateOnChange,validateOnBlur,submittable, onChange, onBlur, ...otherProps } = this.props;
+    const {
+      value,
+      defaultValue,
+      name,
+      onValidationStateChange,
+      validateOnChange,
+      validateOnBlur,
+      submittable,
+      onChange,
+      onBlur,
+      ...otherProps
+    } = this.props;
 
     return (
       <div>

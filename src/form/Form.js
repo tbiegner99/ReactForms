@@ -15,7 +15,7 @@ const _validationState = Symbol('validationState');
 export default class Form extends FormElement {
   static childContextTypes = {
     rootForm: PropTypes.instanceOf(Form),
-    parentForm: PropTypes.instanceOf(Form)
+    parentForm: PropTypes.instanceOf(Form),
   };
 
   static propTypes = {
@@ -23,7 +23,7 @@ export default class Form extends FormElement {
     onSubmit: PropTypes.func.required,
     onBeforeSubmit: PropTypes.func,
     onSubmissionFailure: PropTypes.func,
-    native: PropTypes.bool
+    native: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -31,7 +31,7 @@ export default class Form extends FormElement {
     onValidationFinished: NoOperation,
     onBeforeSubmit: ResolveFunction,
     onSubmissionFailure: ResolveFunction,
-    native: true
+    native: true,
   };
 
   constructor(props) {
@@ -43,7 +43,7 @@ export default class Form extends FormElement {
     this[_validationState] = {
       valid: undefined,
       numberOfInvalidElements: 0,
-      elementResults: {}
+      elementResults: {},
     };
   }
 
@@ -56,7 +56,7 @@ export default class Form extends FormElement {
   }
 
   get labels() {
-    return Object.assign({}, this[_labels]);
+    return { ...this[_labels] };
   }
 
   get elements() {
@@ -82,7 +82,7 @@ export default class Form extends FormElement {
   }
 
   get validationState() {
-    return Object.assign({}, this[_validationState]);
+    return { ...this[_validationState] };
   }
 
   clearSubmitAttempts() {
@@ -125,7 +125,7 @@ export default class Form extends FormElement {
       const nextFormState = {
         valid: currentFormState.valid && elementValidState.valid,
         numberOfInvalidElements:
-          currentFormState.numberOfInvalidElements + elementValidState.numberOfInvalidElements
+          currentFormState.numberOfInvalidElements + elementValidState.numberOfInvalidElements,
       };
       return Object.assign(currentFormState, nextFormState);
     };
@@ -134,7 +134,7 @@ export default class Form extends FormElement {
       formValidStateFromElement,
       {
         valid: true,
-        numberOfInvalidElements: 0
+        numberOfInvalidElements: 0,
       }
     );
 
@@ -186,13 +186,13 @@ export default class Form extends FormElement {
   getChildContext() {
     return {
       rootForm: this.context.rootForm || this,
-      parentForm: this
+      parentForm: this,
     };
   }
 
   async validate(opts) {
     let options = ValueEnforcer.toBeObject(opts, {});
-    options = Object.assign({}, { noNotify: true }, options);
+    options = { noNotify: true, ...options };
     const alwaysResolveValidationWithResults = async (el) => {
       let results;
       try {
@@ -206,7 +206,7 @@ export default class Form extends FormElement {
         fullName: el.fullName,
         name: el.name,
         valid: results.valid,
-        results
+        results,
       };
     };
     const submittableElements = this.elements.filter((el) => el.submittable);
@@ -216,7 +216,7 @@ export default class Form extends FormElement {
     const aggregateReport = (accumulator, elementReport) => {
       const { results } = elementReport;
       const elementResults = Object.assign(accumulator.elementResults, {
-        [elementReport.uniqueId]: results
+        [elementReport.uniqueId]: results,
       });
       const resultsToAppend = {
         name: this.fullName,
@@ -225,7 +225,7 @@ export default class Form extends FormElement {
         valid: accumulator.valid && elementReport.valid,
         numberOfInvalidElements:
           accumulator.numberOfInvalidElements + results.numberOfInvalidElements,
-        elementResults
+        elementResults,
       };
       return Object.assign(accumulator, resultsToAppend);
     };
@@ -233,13 +233,13 @@ export default class Form extends FormElement {
     const results = validationReport.reduce(aggregateReport, {
       valid: true,
       numberOfInvalidElements: 0,
-      elementResults: {}
+      elementResults: {},
     });
 
     this[_validationState] = results;
     this.setState({
-      validationResults: Object.assign({}, results),
-      vaild: results.valid
+      validationResults: { ...results },
+      vaild: results.valid,
     });
 
     if (options.showErrors) {
@@ -317,7 +317,7 @@ export default class Form extends FormElement {
       success: false,
       validationResult: null,
       message: null,
-      value: formValue
+      value: formValue,
     };
     const { onBeforeSubmit, onSubmit, onSubmissionFailure } = this.props;
     const executeBeforeSubmit = async () => {

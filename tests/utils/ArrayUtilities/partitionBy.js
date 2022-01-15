@@ -3,11 +3,14 @@ import ArrayUtils from '../../../src/utils/ArrayUtilities';
 const mapper = (item, index) => {
   if (index === 0) {
     return '';
-  } else if (item % 2 === 0) {
+  }
+  if (item % 2 === 0) {
     return 2;
-  } else if (item % 3 === 0) {
+  }
+  if (item % 3 === 0) {
     return 3;
-  } else if (item % 5 === 0) {
+  }
+  if (item % 5 === 0) {
     return null;
   }
   return undefined;

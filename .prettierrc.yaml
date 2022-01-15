@@ -1,5 +1,5 @@
 printWidth: 100
-parser: babylon
+parser: babel
 tabWidth: 2
 semi: true
 singleQuote: true

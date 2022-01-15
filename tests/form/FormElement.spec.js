@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import React from 'react';
 import { mount } from 'enzyme';
 import FormElement from '../../src/form/FormElement';
@@ -27,6 +28,7 @@ class ExampleFormElement extends FormElement {
   componentWillUnmount() {
     this.mounted = false;
   }
+
   render() {
     return super.renderErrorLabel();
   }
