@@ -15,3 +15,4 @@ A rule is the base class for enforcement of element values during validation. An
 | static get ruleName() -> string | N/A | The contructor name (name of class) | A unique name for the rule. It should be hyphen separated and contain only dom-friendly characters. **Note:** This is a static method |
 | get defaultPriority() -> integer | N/A | 1 | The default priority of the rule if not overriden on the element | 
 | getDefaultMessage(value,ruleInstance) -> string | value - any - the value that failed validation<br/>ruleInstance - Rule - the current instance of the rule |  `Rule violated for value ${value} - ${ruleInstance.ruleName}` | Returns a default error message for the violated rule if none provided on the element |
+

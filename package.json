@@ -2,9 +2,12 @@
   "name": "@tbiegner99/react-forms",
   "version": "1.0.10",
   "description": "A component utility library for react",
-  "module": "./build/esm/index.esm.js",
-  "main": "./build/cjs/index.cjs.js",
+  "module": "./build/esm/src/main.js",
   "type": "module",
+  "sideEffects": false,
+  "files": [
+    "./build/esm/**/*"
+  ],
   "directories": {
     "test": "tests"
   },
@@ -53,7 +56,8 @@
     "@babel/preset-react": "^7.12.10",
     "@babel/runtime": "^7.16.3",
     "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-node-resolve": "^11.1.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^11.2.1",
     "@storybook/addon-actions": "^6.4.13",
     "@storybook/addon-knobs": "^6.4.0",
     "@storybook/addon-links": "^6.4.13",
