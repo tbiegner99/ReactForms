@@ -5,9 +5,6 @@
   "module": "./build/esm/src/main.js",
   "type": "module",
   "sideEffects": false,
-  "files": [
-    "./build/esm/**/*"
-  ],
   "directories": {
     "test": "tests"
   },
