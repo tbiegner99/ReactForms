@@ -2,3 +2,5 @@
 node_modules
 coverage
 tests
+stories
+!build/**/node_modules/**
