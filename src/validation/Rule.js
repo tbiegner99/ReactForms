@@ -26,7 +26,7 @@ export default class Rule {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async validate(value, formValues) {
+  validate(value, formValues) {
     throw new Error(`Error in rule: ${this.name}. No rule definition supplied.`);
   }
 }

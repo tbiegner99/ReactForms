@@ -6,7 +6,7 @@ import pack from './package.json';
 
 export default {
   input: './src/main.js',
-  external: ['react', 'react-dom', 'react-is'],
+  external: ['react', 'react-dom'],
   output: [
     {
       // file: pack.main,
@@ -19,5 +19,11 @@ export default {
     //   format: 'cjs',
     // },
   ],
-  plugins: [resolve(), babel({ skipPreflightCheck: true }), commonjs(), terser()],
+  plugins: [
+    resolve(),
+
+    babel({ babelHelpers: 'runtime', skipPreflightCheck: true, exclude: 'node_modules/**' }),
+    commonjs(),
+    terser(),
+  ],
 };

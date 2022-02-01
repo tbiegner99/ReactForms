@@ -20,7 +20,8 @@
     "lint": "eslint src tests",
     "prepush": "npm run lint && npm run coverage",
     "prepublishOnly": "npm run build",
-    "build": "rollup -c ./rollup.config.js"
+    "build": "rollup -c ./rollup.config.js",
+    "watch": "rollup -c ./rollup.config.js -w"
   },
   "repository": {
     "type": "git",
@@ -47,11 +48,10 @@
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10",
-    "@babel/runtime": "^7.16.3",
+    "@babel/plugin-transform-runtime": "^7.16.10",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/runtime": "^7.16.7",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^11.2.1",
