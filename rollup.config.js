@@ -14,10 +14,10 @@ export default {
       format: 'es',
       preserveModules: true,
     },
-    // {
-    //   file: pack.main,
-    //   format: 'cjs',
-    // },
+    {
+      file: pack.exports.require,
+      format: 'cjs',
+    },
   ],
   plugins: [
     resolve(),
