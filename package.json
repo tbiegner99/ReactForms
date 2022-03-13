@@ -2,14 +2,14 @@
   "name": "@tbiegner99/react-forms",
   "version": "1.1.6",
   "description": "A component utility library for react",
-  "main": "./build/esm/src/main.js",
+  "main": "./build/esm/src/main.mjs",
   "type": "module",
   "sideEffects": false,
   "directories": {
     "test": "tests"
   },
   "exports": {
-    "import": "./build/esm/src/main.js",
+    "import": "./build/esm/src/main.mjs",
     "require": "./build/cjs/src/main.js"
   },
   "scripts": {
