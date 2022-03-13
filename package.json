@@ -2,7 +2,7 @@
   "name": "@tbiegner99/react-forms",
   "version": "1.1.4",
   "description": "A component utility library for react",
-  "module": "./build/esm/src/main.js",
+  "main": "./build/esm/src/main.js",
   "type": "module",
   "sideEffects": false,
   "directories": {
@@ -19,7 +19,7 @@
     "lint-fix": "eslint --fix src tests",
     "lint": "eslint src tests",
     "prepush": "npm run lint && npm run coverage",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "rm -rf build && npm run build",
     "build": "rollup -c ./rollup.config.js",
     "watch": "rollup -c ./rollup.config.js -w"
   },
