@@ -9,8 +9,11 @@ export default {
   external: ['react', 'react-dom'],
   output: [
     {
-      // file: pack.main,
-      dir: './build/esm',
+      file: pack.main,
+      format: 'es',
+    },
+    {
+      dir: './build/modules',
       format: 'es',
       preserveModules: true,
     },
