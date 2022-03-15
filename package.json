@@ -2,14 +2,14 @@
   "name": "@tbiegner99/react-forms",
   "version": "1.2.0",
   "description": "A component utility library for react",
-  "main": "./build/esm/src/main.mjs",
+  "main": "./build/esm/src/main.esm.js",
   "type": "module",
   "sideEffects": false,
   "directories": {
     "test": "tests"
   },
   "exports": {
-    "import": "./build/esm/src/main.mjs",
+    "import": "./build/esm/src/main.esm.js",
     "require": "./build/cjs/src/main.js"
   },
   "scripts": {
@@ -66,7 +66,7 @@
     "@storybook/cli": "^6.4.13",
     "@storybook/react": "^6.4.13",
     "@testing-library/jest-dom": "^5.11.9",
-    "babel-jest": "^27.4.6",
+    "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^3.0.0",
     "css-loader": "^6.5.1",
     "enzyme": "^3.11.0",
@@ -79,7 +79,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "husky": "^0.14.3",
-    "jest": "^27.4.7",
+    "jest": "^26.6.3",
     "jsdoc": "^3.6.6",
     "prettier": "^2.5.1",
     "react": "^16.14.0",
