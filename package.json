@@ -1,6 +1,6 @@
 {
   "name": "@tbiegner99/react-forms",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A component utility library for react",
   "main": "./build/esm/src/main.esm.js",
   "type": "module",
