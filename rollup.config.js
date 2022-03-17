@@ -27,6 +27,6 @@ export default {
 
     babel({ babelHelpers: 'runtime', skipPreflightCheck: true, exclude: 'node_modules/**' }),
     commonjs(),
-    terser(),
+    // terser(),
   ],
 };

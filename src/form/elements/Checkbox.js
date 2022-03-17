@@ -28,11 +28,11 @@ export default class Checkbox extends GroupableElement {
       strokeDashoffset: 15,
       stroke: '#666',
       strokeWidth: 1.5,
-      transition: 'all .5s ease-in-out'
+      transition: 'all .5s ease-in-out',
     };
     if (selected) {
       Object.assign(baseStyles, {
-        strokeDashoffset: 0
+        strokeDashoffset: 0,
       });
     }
 
@@ -56,17 +56,22 @@ export default class Checkbox extends GroupableElement {
     );
   }
 
+  renderLabel() {
+    const { label, children } = this.props;
+    return label || children;
+  }
+
   render() {
-    const { className, style, label, children, tabIndex = 0 } = this.props;
+    const { className, style, tabIndex = 0 } = this.props;
     const selected = this.checked;
     const baseStyles = {
       outline: 'none',
       cursor: 'pointer',
-      display: 'flex'
+      display: 'flex',
     };
     const iconStyles = {
       paddingRight: '10px',
-      paddingTop: '2px'
+      paddingTop: '2px',
     };
     return (
       <div
@@ -79,7 +84,7 @@ export default class Checkbox extends GroupableElement {
         tabIndex={tabIndex}
       >
         <div style={iconStyles}>{this.renderIcon()}</div>
-        <span>{label || children}</span>
+        <span>{this.renderLabel()}</span>
       </div>
     );
   }
